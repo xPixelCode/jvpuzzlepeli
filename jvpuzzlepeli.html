@@ -20,6 +20,8 @@
   --accent-hover: #9d4edd;
   --muted: #94a3b8;
   --tile-size: 28px;
+  --editor-bg: linear-gradient(180deg, #041022, #071227);
+  --game-bg: radial-gradient(circle at top, #111827, #020617);
 }
 
 * {
@@ -29,13 +31,15 @@
 
 body {
   margin: 0;
-  background: linear-gradient(180deg, #041022, #071227);
+  background: var(--editor-bg);
   color: #e6eef8;
   min-height: 100vh;
 }
- body {
-  background: radial-gradient(circle at top, #111827, #020617);
+
+body.game-mode {
+  background: var(--game-bg);
 }
+
 .popup .box {
   animation: popupIn 0.18s ease-out, floatPopup 2s ease-in-out infinite alternate;
 }
@@ -224,6 +228,8 @@ button.small {
   padding: 8px;
   border-radius: 8px;
   overflow: auto;
+  display: inline-block;
+  min-height: 200px;
 }
 button {
   transition: transform .15s, box-shadow .15s;
@@ -262,6 +268,7 @@ button:hover {
   border-radius: 4px;
   cursor: pointer;
   margin: 1px;
+  user-select: none;
 }
 
 .cell[data-t="0"] { background: transparent; }
@@ -298,6 +305,35 @@ canvas#playCanvas {
       #020617 12px,
       #020617 18px
     );
+}
+
+.game-empty-banner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.game-empty-banner.hidden {
+  display: none;
+}
+
+.game-empty-banner h2 {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 32px;
+  color: rgba(255,255,255,0.3);
+  margin: 0 0 10px 0;
+  letter-spacing: 2px;
+}
+
+.game-empty-banner p {
+  font-family: 'Comic Neue', cursive;
+  font-size: 14px;
+  color: rgba(255,255,255,0.2);
+  margin: 0;
 }
 
 .npc-tooltip {
@@ -997,2779 +1033,668 @@ body.popup-open .app {
   background:
     linear-gradient(180deg, #4b2917, #2c160d 52%, #231009);
   border: 4px solid #c48a58;
-  box-shadow:
-    0 0 0 4px #1a0b05,
-    8px 8px 0 #000,
-    0 24px 50px rgba(0, 0, 0, 0.55),
-    inset 0 0 0 2px rgba(255, 212, 170, 0.08);
-  image-rendering: pixelated;
-  scrollbar-color: #c48a58 #2c160d;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+  border-radius: 12px;
+  padding: 24px 20px;
+  font-family: 'Comic Neue', cursive;
 }
 
-.settings-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  padding: 18px 20px;
-  border-bottom: 4px solid #a56639;
-  background: linear-gradient(180deg, #6a3c21, #4e2a17);
-}
-
-.settings-title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.settings-card h2 {
+  margin: 0 0 20px 0;
   font-family: 'Press Start 2P', monospace;
-  font-size: 12px;
-  text-transform: uppercase;
-  color: #fff1c9;
-  text-shadow: 2px 2px 0 #5f3117;
-}
-
-.settings-title i {
-  font-size: 16px;
-}
-
-.settings-close {
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border: 3px solid #d8a173;
-  border-radius: 50%;
-  background: linear-gradient(180deg, #7a4526, #5b3019);
-  color: #fff7e2;
-  font-size: 16px;
-  box-shadow: 3px 3px 0 #2a1208;
-}
-
-.settings-close:hover {
-  transform: translateY(-2px);
-}
-
-.settings-content {
-  padding: 20px;
-  display: grid;
-  gap: 18px;
+  font-size: 20px;
+  text-align: center;
+  letter-spacing: 1px;
+  color: #f9fafb;
 }
 
 .settings-section {
-  padding: 18px;
-  background: linear-gradient(180deg, rgba(64, 33, 18, 0.94), rgba(35, 16, 9, 0.96));
-  border: 3px solid #8d5734;
-  box-shadow:
-    4px 4px 0 #1d0d06,
-    inset 0 0 0 1px rgba(255, 221, 181, 0.08);
+  margin-bottom: 24px;
 }
 
 .settings-section h3 {
-  margin: 0 0 14px;
   font-family: 'Press Start 2P', monospace;
-  font-size: 11px;
-  line-height: 1.5;
-  color: #ffe7b2;
+  font-size: 14px;
+  color: #c48a58;
+  margin: 0 0 12px 0;
+  letter-spacing: 0.5px;
 }
 
-.settings-copy {
-  margin: 12px 0 0;
-  color: #e8c9a4;
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-.mode-buttons {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.mode-btn,
-.music-mute-btn {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 10px;
-  line-height: 1.5;
-  min-height: 52px;
-  padding: 10px 12px;
-  border: 3px solid #000;
-  border-radius: 0;
-  color: #fff4d5;
-  background: linear-gradient(180deg, #7d492a, #61351e);
-  box-shadow:
-    3px 3px 0 #2a1208,
-    inset 0 0 0 1px rgba(255, 223, 186, 0.1);
-  transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
-}
-
-.mode-btn:hover,
-.music-mute-btn:hover,
-.settings-close:hover {
-  transform: translateY(-2px);
-}
-
-.mode-btn.active {
-  background: linear-gradient(180deg, #e2c57d, #c8a55e);
-  border-color: #fff0b8;
-  color: #4a2412;
-  box-shadow: 3px 3px 0 #674424;
-}
-
-.music-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+.settings-option {
+  display: flex;
+  align-items: center;
   gap: 12px;
+  margin-bottom: 8px;
 }
 
-.music-tile {
-  display: grid;
-  gap: 8px;
-  align-content: start;
-  min-height: 100%;
-  padding: 10px;
-  background: linear-gradient(180deg, #693b22, #4a2817);
-  border: 3px solid #8d5734;
-  box-shadow: 4px 4px 0 #1d0d06;
-  cursor: pointer;
-  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
-}
-
-.music-tile img {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  image-rendering: pixelated;
-  border: 3px solid #d8a173;
-  border-radius: 0;
-  margin-bottom: 2px;
-}
-
-.music-tile strong {
-  display: block;
+.settings-option label {
+  flex: 1;
   color: #e5e7eb;
-  font-family: 'Press Start 2P', monospace;
-  font-size: 10px;
-  line-height: 1.6;
+  font-size: 13px;
 }
 
-.music-tile span {
+.settings-option input[type="color"],
+.settings-option input[type="text"],
+.settings-option input[type="number"],
+.settings-option select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #9a8562;
+  background: #2c160d;
+  color: #e5e7eb;
+  font-family: 'Comic Neue', cursive;
   font-size: 12px;
-  color: #e4bd8f;
 }
 
-.music-tile:hover {
-  transform: translateY(-3px);
-}
-
-.music-tile.active {
-  border-color: #ffe0a3;
-  box-shadow:
-    0 0 0 2px #c08a50 inset,
-    4px 4px 0 #1d0d06;
-}
-
-.music-controls {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 12px;
-  align-items: center;
-  margin-top: 14px;
-}
-
-.music-mute-btn.is-muted {
-  background: linear-gradient(180deg, #6c2720, #4f1712);
-  border-color: #d69182;
-  box-shadow: 3px 3px 0 #2d0b08;
-}
-
-.volume-wrap {
-  display: grid;
-  gap: 8px;
-}
-
-.volume-label {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: center;
-  color: #ffe9be;
-  font-family: 'Press Start 2P', monospace;
-  font-size: 9px;
-  line-height: 1.6;
-}
-
-#volumeSlider {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  height: 18px;
-  margin: 0;
-  border: 3px solid #000;
-  border-radius: 0;
-  background: linear-gradient(90deg, #d2b06d 0%, #d2b06d var(--volume-fill, 70%), #442114 var(--volume-fill, 70%), #442114 100%);
-  box-shadow: inset 0 0 0 2px #8d5734;
-  outline: none;
-}
-
-#volumeSlider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 16px;
-  height: 28px;
-  border: 3px solid #000;
-  border-radius: 0;
-  background: #fff1cd;
-  box-shadow: 2px 2px 0 #3b1b0d;
+.settings-option input[type="color"] {
+  width: 50px;
+  height: 36px;
   cursor: pointer;
+  padding: 2px;
 }
 
-#volumeSlider::-moz-range-thumb {
-  width: 16px;
-  height: 28px;
-  border: 3px solid #000;
-  border-radius: 0;
-  background: #fff1cd;
-  box-shadow: 2px 2px 0 #3b1b0d;
-  cursor: pointer;
+.settings-option input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 1px;
 }
 
-#volumeSlider::-moz-range-track {
-  height: 18px;
-  border: 3px solid #000;
-  background: #442114;
-}
-
-.app {
-  position: relative;
-}
-
-.card {
-  border: 1px solid rgba(147, 197, 253, 0.15);
-}
-
-.pixel-title {
-  color: #fff6dd;
-  text-shadow:
-    0 0 0 #000,
-    3px 3px 0 #241109,
-    0 0 18px rgba(255, 196, 128, 0.2);
-}
-
-.pixel-lore {
-  color: #f1dcc0;
-  border-color: rgba(216, 161, 115, 0.55);
-  box-shadow:
-    0 10px 0 #170c07,
-    inset 0 0 0 2px rgba(255, 228, 190, 0.06);
-}
-
-#playerArea,
-#editorArea {
-  border: 1px solid rgba(147, 197, 253, 0.12);
-  box-shadow: 0 16px 40px rgba(2, 6, 23, 0.45);
-}
-
-#editorArea,
-#playerArea,
-.card {
-  background:
-    linear-gradient(180deg, rgba(18, 26, 48, 0.95), rgba(9, 14, 30, 0.98));
-}
-
-
-
-</style>
-
-
-</head>
-<body>
-<audio id="bgm" loop autoplay>
-  <source src="https://raw.githubusercontent.com/ItzPixelmc/jvgamesassets/main/jvpuzzle-theme.mp3" type="audio/mpeg">
-</audio>
-
-<div class="app">
-  <div class="card">
-  <h1 class="pixel-title">JV-PUZZLE</h1>
-<p class="pixel-lore">
-  📜 <strong>Peliopas:</strong><br>
-Luo oma karttasi, tallenna se .jvpuzzle tiedostona, tai kopioi kartan JV-Key. Voit jakaa sen helposti muille tai pelata muiden tekemiä tasoja.
-</p>
-    <div class="start start-menu">
-  <div class="start start-menu pixel-menu">
-
- <div class="start start-menu pixel-menu pixel-panel">
-
-  <button id="openEditor" class="pixel-btn editor-btn">
-    <i class="fas fa-hat-wizard"></i>
-    <span>Editori</span>
-  </button>
-
-  <button id="openPlayer" class="pixel-btn play-btn">
-    <i class="fas fa-dungeon"></i>
-    <span>Pelaa</span>
-  </button>
-
-  <a href="https://sites.google.com/view/jv-games/fi_jvpuzzle_puzzlehub"
-     target="_blank"
-     class="pixel-btn hub-btn">
-    <i class="fas fa-coins"></i>
-    <span>Puzzle Hub</span>
-    
-  </a>
-  <button id="settingsBtn" class="settings-fab">
-  <i class="fas fa-cog"></i>
-</button>
-</div>
-
-
-</div>
-
-
-<style>
-  .linkbtn {
-    text-decoration: none;     /* ei alleviivausta */
-    color: inherit;            /* käyttää napin tekstiväriä */
-    cursor: pointer;           /* näyttää osoitinkäden */
-  }
-  .linkbtn:hover,
-  .linkbtn:focus,
-  .linkbtn:active {
-    text-decoration: none;     /* ei tule hover-efektiä linkiltä */
-    color: inherit;            /* ei vaihda väriä */
-  }
-  .touch-controls {
-  margin-top: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-}
-.touch-controls div {
-  display: flex;
-  gap: 6px;
-}
-.dir-btn {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: var(--accent);
-  border: none;
-  font-size: 24px;
-  color: white;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  transition: transform 0.15s ease, background 0.2s ease;
-}
-.dir-btn:hover {
-  transform: scale(1.1);
-  background: #9d6dff;
-}
-.npc-image-selector {
-  position: relative;
-  width: 200px;
-  cursor: pointer;
-  user-select: none;
-}
-
-.selected-image {
-  display: flex;
-  align-items: center;
-  padding: 6px 8px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background: #1f2937;
-  color: white;
-  gap: 8px;
-}
-
-.selected-image img {
-  width: 32px;
-  height: 32px;
+.settings-option input[type="color"]::-webkit-color-swatch {
+  border: 1px solid #9a8562;
   border-radius: 4px;
 }
 
-.dropdown-images {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  max-height: 200px;
-  overflow-y: auto;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background: #111827;
-  margin-top: 4px;
-  z-index: 1000;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-
-.dropdown-images .npc-option {
+.settings-buttons {
   display: flex;
-  align-items: center;
-  padding: 6px 8px;
-  gap: 8px;
-  transition: background 0.2s;
-  color: white;
-}
-
-.dropdown-images .npc-option:hover {
-  background: #374151;
-}
-/* === NPC ERROR MESSAGE === */
-.npc-error {
-  display: none;
-  margin-top: 8px;
-  padding: 6px 10px;
-  border-radius: 8px;
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.5);
-  color: #fecaca;
-  font-size: 13px;
-  text-align: center;
-  animation: slideDown 0.18s ease-out;
-}
-
-/* Popup shake */
-.npc-popup.shake {
-  animation: shake 0.35s;
-}
-
-/* Animations */
-@keyframes shake {
-  0% { transform: translate(-50%, -50%) translateX(0); }
-  20% { transform: translate(-50%, -50%) translateX(-6px); }
-  40% { transform: translate(-50%, -50%) translateX(6px); }
-  60% { transform: translate(-50%, -50%) translateX(-4px); }
-  80% { transform: translate(-50%, -50%) translateX(4px); }
-  100% { transform: translate(-50%, -50%) translateX(0); }
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* === YLEINEN POPUP-BLUR === */
-body.popup-open .app {
-  filter: blur(6px) brightness(0.9);
-  transition: filter 0.2s ease;
-  pointer-events: none; /* ei klikata taustaa */
-}
-
-body.popup-open {
-  overflow: hidden; /* estää scrollin popupin aikana */
-}
-/* === EDITOR RPG STYLE === */
-#editorArea {
-  background:
-    repeating-linear-gradient(
-      90deg,
-      #0b1224,
-      #0b1224 8px,
-      #0f172a 8px,
-      #0f172a 16px
-    );
-  border: 6px solid #000;
-  box-shadow: 0 10px 0 #000;
-}
-
-/* Editor grid */
-#editorGrid {
-  border: 4px solid #000;
-  background: #020617;
-  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.05);
-}
-
-/* Palette RPG feel */
-.palette .tile {
-  border: 3px solid #000;
-  box-shadow: 0 4px 0 #000;
-}
-/* === DUNGEON GAME FRAME === */
-.game-frame {
-  background:
-    repeating-linear-gradient(
-      45deg,
-      #020617,
-      #020617 6px,
-      #030712 6px,
-      #030712 12px
-    );
-  border: 8px solid #000;
-  border-radius: 10px;
-  box-shadow:
-    0 14px 0 #000,
-    inset 0 0 0 4px rgba(255,255,255,0.05);
-  padding: 12px;
-  margin: 0 auto 20px;
-  max-width: fit-content;
-}
-
-.game-title {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 12px;
-  text-align: center;
-  margin-bottom: 8px;
-  color: #a855f7;
-  text-shadow: 2px 2px 0 #000;
-}
-
-/* Peli-canvasin reunat */
-#playCanvas {
-  border: 6px solid #000;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  background-color: #0f172a; /* Oletus */
-}
-.instructions,
-.game-instructions {
-  position: relative;
-  z-index: 5;
-  margin-top: 16px;
-}
-/* === GAME CONTAINER === */
-.game-container {
-  display: flex;
-  gap: 16px; /* canvas ja ohjebox väliin */
+  gap: 10px;
   justify-content: center;
-  align-items: flex-start;
   margin-top: 20px;
 }
 
-/* === DUNGEON CANVAS === */
-.game-frame {
-  background:
-    repeating-linear-gradient(
-      45deg,
-      #020617,
-      #020617 6px,
-      #030712 6px,
-      #030712 12px
-    );
-  border: 8px solid #000;
-  border-radius: 10px;
-  box-shadow:
-    0 14px 0 #000,
-    inset 0 0 0 4px rgba(255,255,255,0.05),
-    0 24px 45px rgba(0,0,0,0.38);
-  padding: 12px;
-}
-
-.game-title {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 12px;
-  text-align: center;
-  margin-bottom: 8px;
-  color: #ffe4a3;
-  text-shadow: 2px 2px 0 #000, 0 0 12px rgba(251, 191, 36, 0.2);
-}
-
-#playCanvas {
-  background: #020617;
-  border: 4px solid #000;
-  image-rendering: pixelated;
-}
-
-/* === QUEST BOX === */
-.quest-box {
-  background: linear-gradient(#3f2f1f, #2a1f14);
-  border: 4px solid #000;
-  border-radius: 6px;
-  box-shadow: 0 6px 0 #000, inset 0 0 0 2px rgba(255,255,255,0.1);
-  padding: 14px;
-  width: 220px;
-  font-family: 'Press Start 2P', monospace;
-  font-size: 11px;
-  line-height: 1.8;
-  color: #fef3c7;
-}
-
-.quest-title {
-  color: #fde68a;
-  margin-bottom: 6px;
-  text-shadow: 2px 2px 0 #000;
-}
-.pixel-input {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 12px;
-  padding: 8px 12px;
-  border-radius: 4px;
-  border: 4px solid #000;
-  background: repeating-linear-gradient(
-    45deg,
-    #0b1224,
-    #0b1224 6px,
-    #0f172a 6px,
-    #0f172a 12px
-  );
-  color: #fef3c7;
-  box-shadow: 0 4px 0 #000, inset 0 0 0 2px rgba(255,255,255,0.1);
-  width: 200px;
-}
-.pixel-input:focus {
-  outline: none;
-  border-color: #60a5fa;
-  box-shadow: 0 0 0 2px rgba(96,165,250,.4);
-}
-.project-name-panel {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.project-name-panel label {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 12px;
-  color: #a855f7;
-  text-shadow: 1px 1px 0 #000;
-}
-
-#projectName {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 12px;
-  padding: 6px 10px;
-  border: 3px solid #000;
-  border-radius: 6px;
-  background: linear-gradient(135deg, #1f2937, #111827);
-  color: #fef3c7;
-  text-shadow: 0 1px 0 #000;
-  width: 200px;
-}
-
-#projectName:focus {
-  outline: none;
-  border-color: #c084fc;
-  box-shadow: 0 0 6px #c084fc;
-}
-
-#saveJVP {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 12px;
-  padding: 6px 12px;
-  border: 4px solid #000;
-  border-radius: 6px;
-  background: linear-gradient(#c084fc, #7c3aed);
-  color: #fff;
-  text-shadow: 1px 1px 0 #000;
-  cursor: pointer;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
-}
-
-#saveJVP:hover {
-  transform: translateY(2px);
-  box-shadow: 0 2px 0 #000, inset 0 0 0 2px rgba(0,0,0,0.2);
-}
-
-#editorGridWrapper {
-  position: relative;
-}
- /* === RPG UNDO / REDO OVERRIDE === */
-#editorToolbar{
-  display:flex;
-  gap:8px;
-  align-items:center;
-  margin-bottom:12px;
-}
-
-#editorToolbar .rpg-btn{
-  width:46px;
-  height:46px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  font-size:18px;
-}
-
-#fillToolBtn.active{
-  background:
-    radial-gradient(circle at top left, #ffe27a, #c98b00 70%) !important;
-
-  color:#000 !important;
-
-  transform:scale(1.08);
-
-  box-shadow:
-    0 0 0 3px rgba(255,215,0,0.35),
-    0 0 12px rgba(255,215,0,0.45);
-}#editorToolbar{
-  display:flex;
-  gap:8px;
-  align-items:center;
-  margin-bottom:12px;
-}
-
-#editorToolbar .rpg-btn{
-  width:46px;
-  height:46px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  font-size:18px;
-}
-
-#fillToolBtn.active{
-  background:
-    radial-gradient(circle at top left, #ffe27a, #c98b00 70%) !important;
-
-  color:#000 !important;
-
-  transform:scale(1.08);
-
-  box-shadow:
-    0 0 0 3px rgba(255,215,0,0.35),
-    0 0 12px rgba(255,215,0,0.45);
-}
-/* === PALETIN TILE FIX === */
-.palette {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
-  gap: 8px;
-  max-width: 300px;
-}
-
-.tile {
-  flex-direction: column;
-  padding: 6px 4px;
-  text-align: center;
-}
-
-.tile-icon {
-  font-size: 20px;
-  line-height: 1;
-  margin-bottom: 2px;
-}
-
-.tile-label {
-  font-size: 10px;
-  line-height: 1;
-  opacity: 0.85;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Erikoistilet */
-.tile.teleport {
-  background: radial-gradient(circle at top, #8b5cf6, #4c1d95);
-}
-
-.tile.danger {
-  background: radial-gradient(circle at top, #ef4444, #7f1d1d);
-}
-/* ===== EDITOR LAYOUT FIX ===== */
-.editor-topbar {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-/* ===== PALETTE ===== */
-/* PALETTE: vähemmän lego, enemmän toolstrip */
-.palette {
-  display: flex;
-  gap: 10px;
-  padding: 10px;
-  background: rgba(0,0,0,0.25);
-  border-radius: 14px;
-  border: 2px solid rgba(255,255,255,0.06);
-}
-
-/* Tee tileistä kevyempiä */
-.palette .tile {
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
-  border: none;
-  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.12);
-  background-blend-mode: overlay;
-}
-
-/* Selected EI HUUDA */
-.palette .tile.selected {
-  outline: none;
-  box-shadow:
-    inset 0 0 0 3px #60a5fa,
-    0 0 10px rgba(96,165,250,0.5);
-}
-
-.palette .tile:hover {
-  transform: translateY(-2px);
-}
-
-.palette .tile:active {
-  transform: translateY(3px);
-  box-shadow: 0 2px 0 #000;
-}
-
-
-
-/* ===== TILE COLORS ===== */
-.tile-empty { background: #1f2937; }
-.tile-wall  { background: linear-gradient(#374151, #111827); }
-.tile-goal  { background: linear-gradient(#fde68a, #facc15); color:#111; }
-.tile-key   { background: linear-gradient(#fbbf24, #d97706); }
-.tile-door  { background: linear-gradient(#34d399, #059669); }
-.tile-trap  { background: linear-gradient(#f87171, #b91c1c); }
-.tile-tp-a  { background: linear-gradient(#a78bfa, #7c3aed); }
-.tile-tp-b  { background: linear-gradient(#f472b6, #db2777); }
-
-/* Teleport letters */
-.tile .tp {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 16px;
-}
-
-/* ===== EDITOR ACTION BUTTONS ===== */
-.editor-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.rpg-action {
-  background: linear-gradient(#c084fc, #7c3aed);
-  border: 4px solid #000;
-  border-radius: 10px;
-  color: white;
-  font-family: 'Press Start 2P', monospace;
-  font-size: 11px;
-  padding: 8px 14px;
-  box-shadow: 0 6px 0 #000;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.rpg-action.ghost {
-  background: linear-gradient(#4ade80, #16a34a);
-}
-
-.rpg-action:active {
-  transform: translateY(4px);
-  box-shadow: 0 2px 0 #000;
-}
-
-/* ===== RESIZE / CLEAR TOOLBAR ===== */
-.editor-toolbar-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
-}
-/* ACTION BUTTONS: rauhallisemmat */
-.rpg-action {
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.15);
-  box-shadow: none;
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 13px;
-  padding: 8px 14px;
-  border-radius: 10px;
-}
-
-/* Hover = kevyt */
-.rpg-action:hover {
-  background: rgba(255,255,255,0.14);
-  transform: translateY(-1px);
-}
-
-/* Ei enää arcade-painallusta joka paikassa */
-.rpg-action:active {
-  transform: translateY(0);
-  box-shadow: none;
-}
-.editor-controls {
-  margin-top: 12px;
-  padding: 12px 14px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  background: linear-gradient(180deg, rgba(28, 37, 63, 0.95), rgba(15, 22, 42, 0.98));
-  border-radius: 10px;
-  border: 1px solid rgba(216, 161, 115, 0.3);
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,0.04),
-    0 8px 24px rgba(0,0,0,0.24);
-}
-
-/* Tee inputeista rauhallisemmat */
-.editor-controls input[type=number] {
-  background: rgba(0,0,0,0.3);
-  border: none;
+.settings-buttons button {
+  padding: 10px 20px;
   border-radius: 8px;
-  width: 70px;
-  text-align: center;
-}
-#editorArea > .layout {
-  padding-top: 10px;
-}
- /* --- Pixel / RPG napit editoriin --- */
-.pixel-btn {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 12px;
-  letter-spacing: 1px;
-  padding: 10px 14px;
-  border-radius: 6px;
-  border: 4px solid #000;
-  color: #fff;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap:6px;
+  border: none;
   cursor: pointer;
-  box-shadow: 0 6px 0 #000, inset 0 0 0 2px rgba(255,255,255,0.15);
-  transition: all 0.12s ease;
-  background: linear-gradient(135deg, #7c3aed, #c084fc);
-  text-shadow: 1px 1px 0 #000;
-  position: relative;
-  overflow: hidden;
+  font-family: 'Comic Neue', cursive;
+  font-weight: bold;
+  font-size: 13px;
+  min-width: 100px;
 }
 
-.pixel-btn.play-btn { background: linear-gradient(135deg, #22c55e, #16a34a); }
-.pixel-btn.editor-btn { background: linear-gradient(135deg, #7c3aed, #c084fc); }
-.pixel-btn.hub-btn { background: linear-gradient(135deg, #ec4899, #db2777); }
+.settings-buttons button.apply {
+  background: linear-gradient(135deg, #c48a58, #a87a4a);
+  color: white;
+}
 
-.pixel-btn:hover {
-  transform: translateY(-2px);
+.settings-buttons button.apply:hover {
   filter: brightness(1.1);
-  box-shadow: 0 8px 0 #000, inset 0 0 0 2px rgba(255,255,255,0.2);
 }
 
-.pixel-btn::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(255,255,255,0.16), transparent 45%);
-  pointer-events: none;
+.settings-buttons button.close {
+  background: transparent;
+  border: 1px solid #9a8562;
+  color: #e5e7eb;
 }
 
-.pixel-btn:active {
-  transform: translateY(4px);
-  box-shadow: 0 2px 0 #000, inset 0 0 0 2px rgba(0,0,0,0.3);
+.settings-buttons button.close:hover {
+  background: rgba(196, 138, 88, 0.1);
 }
 
-/* Paletti hover & selected */
-.palette .tile {
-  border-radius:8px;
-  width:56px;
-  height:56px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-weight:bold;
-  font-size:18px;
-  cursor:pointer;
-  border:3px solid #000;
-  box-shadow:0 4px 0 #000;
-  transition: all 0.12s ease;
-}
-
-.palette .tile:hover { transform: translateY(-2px); box-shadow:0 6px 0 #000; }
-.palette .tile.selected { outline: 3px solid #60a5fa; outline-offset:2px; box-shadow:0 0 15px rgba(96,165,250,.6); }
-
-/* Resize controls ja inputit yhtenäiseksi */
-.resize-controls button,
-.project-name-panel button {
-  font-family: 'Press Start 2P', monospace;
-  font-size:12px;
-  padding:6px 10px;
-  border-radius:6px;
-  border:4px solid #000;
-  text-shadow:1px 1px 0 #000;
-  cursor:pointer;
-  box-shadow:0 6px 0 #000, inset 0 0 0 2px rgba(255,255,255,0.15);
-  transition: all 0.12s ease;
-  background: linear-gradient(135deg, #7c3aed, #c084fc);
-  color:white;
-}
-
-.resize-controls button:hover,
-.project-name-panel button:hover { transform: translateY(-2px); filter: brightness(1.1); }
-.resize-controls button:active,
-.project-name-panel button:active { transform: translateY(4px); box-shadow:0 2px 0 #000, inset 0 0 0 2px rgba(0,0,0,0.3); }
-
-.project-name-panel input,
-.resize-controls input {
-  font-family:'Press Start 2P', monospace;
-  font-size:12px;
-  padding:6px 10px;
-  border-radius:6px;
-  border:3px solid #000;
-  background: linear-gradient(135deg, #111827, #1f2937);
-  color:#fef3c7;
-  box-shadow:0 4px 0 #000, inset 0 0 0 2px rgba(255,255,255,0.1);
-}
-
-.project-name-panel input:focus,
-.resize-controls input:focus {
-  outline:none;
-  border-color:#60a5fa;
-  box-shadow:0 0 4px #60a5fa;
-}
-
-#editorHelpPopup {
-  display: none; /* piilotetaan aluksi */
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-  border: 1px solid rgba(255,255,255,0.08);
-  padding: 18px 20px;
-  border-radius: 14px;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-  max-width: 400px;
-  z-index: 9999;
-}
-#editorHelpPopup.show {
-  display: block;
-}
-
-}  /* Undo/Redo erikoisnapit */
-/* Undo / Redo buttons */
-/* Undo button */
-#undoBtn {
-  background: linear-gradient(135deg, #ff6b6b, #ff4757); /* punainen / pinkki */
-  color: white;
-  border: none;
-  border-radius: 50%; /* pyöreä nappi */
-  width: 48px;
-  height: 48px;
-  font-size: 20px;
-  cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  transition: all 0.2s ease-in-out;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin: 5px;
-}
-
-#undoBtn:hover {
-  background: linear-gradient(135deg, #ff4757, #ff6b6b);
-  transform: translateY(-3px) rotate(-5deg) scale(1.1);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-}
-
-#undoBtn:active {
-  transform: translateY(0) rotate(0) scale(0.95);
-  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-}
-
-/* Redo button */
-#redoBtn {
-  background: linear-gradient(135deg, #1dd1a1, #10ac84); /* vihreä / minttu */
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  font-size: 20px;
-  cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  transition: all 0.2s ease-in-out;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin: 5px;
-}
-
-#redoBtn:hover {
-  background: linear-gradient(135deg, #10ac84, #1dd1a1);
-  transform: translateY(-3px) rotate(5deg) scale(1.1);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-}
-
-#redoBtn:active {
-  transform: translateY(0) rotate(0) scale(0.95);
-  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-}
- /* Yläpaneelin napit */
-.pixel-btn {
-  background: #1f2937; /* tumma nappi */
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 10px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.settings-section .switch {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 10px;
 }
 
-.pixel-btn i {
-  pointer-events: none; /* klikkaus menee napille, ei ikonille */
-}
-
-/* ? nappi */
-.help-btn {
-  background: #7c3aed;
-}
-
-.help-btn:hover {
-  background: #5b21b6;
-}
-
-/* Tallenna nappi */
-.save-btn {
-  background: #10b981;
-}
-
-.save-btn:hover {
-  background: #059669;
-}
-.tile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  font-size: 18px;
-}
-
-.tile i {
-  font-size: 18px;
-}
-
-.tile-label {
-  font-size: 9px;
-  font-family: 'Press Start 2P', monospace;
-  opacity: 0.75;
-  pointer-events: none;
-}
-.tile {
-  background: inherit; /* TÄRKEÄ */
-}
-.tile i {
-  color: inherit;   /* ikoni käyttää lohkon väriä */
-}
-/* perus tile */
-.tile {
-  width: 56px;
-  height: 56px;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
+.settings-section .switch input[type="checkbox"] {
+  width: 24px;
+  height: 24px;
   cursor: pointer;
-  border: 2px solid rgba(255,255,255,0.08);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.tile i {
-  font-size: 18px;
-}
-
-.tile-label {
-  font-size: 8px;
-  font-family: 'Press Start 2P', monospace;
-  opacity: 0.85;
-}
-.tile-label {
-  color: black; /* sama kaikille */
-  opacity: 0.85;
-}
-
-/* hover */
-.tile:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 0 2px rgba(124,58,237,0.6);
-}
-
-/* selected */
-.tile.selected {
-  box-shadow: 0 0 0 3px #7c3aed;
-}
-
-/* === VÄRIT PER TILE === */
-
-.tile-empty {
-  background: #1f2937;
-}
-.tile-empty i { color: #9ca3af; }
-
-.tile-wall {
-  background: #374151;
-}
-.tile-wall i { color: #f9fafb; }
-
-.tile-goal {
-  background: #374151;
-}
-.tile-goal i { color: #fbbf24; } /* kulta, ei ruskea */
-
-.tile-key {
-  background: #374151;
-}
-.tile-key i { color: yellow; } /* valkoinen = selkeä */
-
-.tile-door {
-  background: #10b981;
-}
-.tile-door i { color: #ecfeff; }
-
-.tile-trap {
-  background: #ef4444;
-}
-.tile-trap i { color: #fff; }
-
-.tile-tp-a {
-  background: #8b5cf6;
-}
-.tile-tp-a i { color: #ede9fe; }
-
-.tile-tp-b {
-  background: #ec4899;
-}
-.tile-tp-b i { color: #fdf2f8; }
-.tile i {
-  text-shadow: 0 0 6px rgba(255,255,255,0.25);
-}
-
-
-
-.toggle {
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-}
-
-.danger {
-  background: #7f1d1d;
-}
-
-/* DEFAULT (dark) */
-body {
-  --bg: #0f172a;
-  --panel: #111827;
-  --border: #7c3aed;
-  --text: #e5e7eb;
-}
-
-body {
-  background: var(--bg);
-  color: var(--text);
-}
-
-.pixel-panel {
-  background: var(--panel);
-  border-color: var(--border);
-}
-body.crt-on {
-  image-rendering: pixelated;
-  animation: crt-flicker 5.2s ease-in-out infinite;
-}
-
-body.crt-on::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg, rgba(255, 244, 214, 0.06), rgba(255, 196, 128, 0.015)),
-    repeating-linear-gradient(
-      to bottom,
-      rgba(0,0,0,0.12),
-      rgba(0,0,0,0.12) 2px,
-      rgba(255,255,255,0.015) 2px,
-      rgba(255,255,255,0.015) 3px,
-      transparent 3px,
-      transparent 5px
-    );
-  opacity: .48;
-  mix-blend-mode: soft-light;
-  z-index: 9998;
-}
-
-@keyframes crt-flicker {
-  0% { filter: contrast(1.01) brightness(0.995) saturate(0.94); }
-  50% { filter: contrast(1.035) brightness(1) saturate(0.92); }
-  100% { filter: contrast(1.015) brightness(0.992) saturate(0.93); }
-}
-
-body.crt-on::after {
-  content: "";
-  pointer-events: none;
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-
-  background:
-    radial-gradient(ellipse at center, transparent 62%, rgba(0,0,0,0.24) 100%),
-    linear-gradient(180deg, rgba(255,255,255,0.03), transparent 36%, rgba(0,0,0,0.12));
-}
-.help-popup {
-  position: absolute;
-  top: 60px;
-  right: 20px;
-
-  background: #020617;
-  border: 2px solid #7c3aed;
-  border-radius: 14px;
-  padding: 12px;
-  width: 260px;
-
-  box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-  z-index: 10001;
-}
-
-.hidden {
-  display: none;
-}
-/* Maailman tyyli -paneelin erikoismuotoilu */
-.style-panel {
-    background: linear-gradient(180deg, rgba(28, 37, 63, 0.95), rgba(15, 22, 42, 0.98));
-    border: 4px solid #000;
-    border-radius: 12px;
-    padding: 15px;
-    box-shadow: 0 6px 0 #000;
-    margin-top: 15px;
-}
-
-/* Dropdown menu (select) tyyli */
-.rpg-select {
-    width: 100%;
-    padding: 10px;
-    background: #111827;
-    border: 3px solid #000;
-    color: #fff;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-bottom: 10px;
-    box-shadow: 0 4px 0 #000;
-}
-
-/* URL ja Väri-inputit */
-.rpg-input-field {
-    width: 100%;
-    background: #000;
-    border: 2px solid #7c3aed;
-    color: #22c55e;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 9px;
-    padding: 8px;
-    margin-top: 5px;
-    border-radius: 4px;
-}
-
-/* ELEMENTTIEN MUSTAT OUTLINET (Tärkeä!) */
-/* Lisätään kaikille pelielementeille selkeä RPG-reuna */
-.tile, .entity, .player-sprite {
-    outline: 2px solid #000;
-    outline-offset: -2px; /* Pitää reunan laatikon sisällä */
-}
-
-/* Canvasin taustakuvan säätö */
-#gameCanvas {
-    background-size: cover;
-    background-position: center;
-    image-rendering: pixelated;
-    border: 4px solid #000;
-}
-/* Siistimpi värivalitsin */
-#bgColorPicker {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    width: 60px; /* Ei koko näytön levyinen */
-    height: 40px;
-    background-color: transparent;
-    border: 3px solid #000;
-    border-radius: 8px;
-    cursor: pointer;
-    padding: 0;
-    overflow: hidden;
-    box-shadow: 0 4px 0 #000;
-}
-
-#bgColorPicker::-webkit-color-swatch-wrapper {
-    padding: 0;
-}
-
-#bgColorPicker::-webkit-color-swatch {
-    border: none;
-}
-
-/* Tekstikenttä URLille */
-#bgUrlInput {
-    width: 100%;
-    background: #111827;
-    border: 3px solid #000;
-    color: #22c55e;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 9px;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
-}
-#fillToolBtn{
-  width:44px;
-  height:44px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  font-size:18px;
-
-  border-radius:10px;
-
-  transition:0.15s;
-}
-
-#fillToolBtn.active{
-  background:
-    radial-gradient(circle at top left, #ffe27a, #c98b00 70%) !important;
-
-  color:#000 !important;
-
-  transform:scale(1.08);
-
-  box-shadow:
-    0 0 0 3px rgba(255,215,0,0.35),
-    0 0 12px rgba(255,215,0,0.45);
-}
-.tool-btn{
-  width:42px;
-  height:42px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:18px;
-  border-radius:10px;
-  cursor:pointer;
-  transition:0.15s;
-}
-
-.tool-btn.active{
-  outline:3px solid #8b5cf6;
-  transform:scale(1.06);
-  box-shadow:0 0 12px rgba(139,92,246,0.6);
-}
 </style>
 
+<body>
 
+<div class="game-empty-banner" id="gameEmptyBanner">
+  <h2>JV-Puzzle</h2>
+  <p>Avaa kartta aloittaaksesi</p>
+</div>
+
+<!-- start näkymä -->
+<div class="app" id="app">
+  <div class="card" style="text-align: center;">
+    <h1>🧩 JV Puzzle</h1>
+    <p class="hint" style="font-size: 13px;">Editor & Peli (.jvpuzzle)</p>
+
+    <div class="start-menu" style="display: flex; justify-content: center; gap: 12px;">
+      <button class="bigbtn" id="newBtn">📝 Uusi</button>
+      <button class="bigbtn ghost" id="loadBtn">📂 Avaa</button>
     </div>
   </div>
- <div id="screenFlash"></div>
-
-<div id="editorArea" class="card" style="display:none">
-<!-- Editorin yläkulma -->
-<div id="editorTopBar" style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#111827;border-bottom:2px solid #7c3aed;">
-
-  <!-- Vasen osa: Logo + Kartan nimi -->
-  <div style="display:flex;align-items:center;gap:12px;">
-    <img src="https://i.postimg.cc/BQYLbdmD/logo-Kartta-Editori.png" alt="JV-Puzzle Logo" style="height:40px;">
-  </div>
-
-  <!-- Oikea osa: ? nappi + Tallenna nappi -->
-  <div style="display:flex;align-items:center;gap:8px;">
-    <!-- ? nappi -->
-    <button id="editorHelpBtn" class="pixel-btn help-btn" title="Editorin ohjeet">
-      <i class="fas fa-question-circle"></i>
-    </button>
-
-    <!-- Tallenna nappi -->
-    <button id="saveBtn" class="pixel-btn save-btn" title="Tallenna kartta">
-      <i class="fas fa-save"></i>
-    </button>
-  </div>
-
 </div>
 
+<!-- Editor -->
+<div class="app layout hidden" id="editor">
+  <div class="card">
+    <label>Projektin nimi</label>
+    <input type="text" id="projectName" placeholder="Nimeä projektisi...">
 
-<!-- Overlay taustalle -->
-<div id="editorHelpOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:9998;"></div>
-
-<!-- Popup itse -->
-<div id="editorHelpPopup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%);background: #3F5EFB;
-background: radial-gradient(circle, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%);;, rgba(255,255,255,0.02)); border:1px solid rgba(255,255,255,0.08); padding:18px 20px; border-radius:14px; box-shadow:0 12px 40px rgba(0,0,0,0.5); max-width:400px; z-index:9999;">
-  <h3>Editorin ohjeet</h3>
-  <p><strong>Karttaeditori:</strong> Rakenna kenttä lohkoista. Käytä palettia valitaksesi lohkon tyypin.</p>
-  <p><strong>Pelaajan asettaminen:</strong> Aseta aloituspiste painamalla 'Aseta pelaaja'.</p>
-  <p><strong>NPC:t:</strong> Lisää NPC:t ja määritä nimi, dialogi ja ulkonäkö.</p>
-  <p><strong>Kartan tallennus:</strong> Tallenna .jvpuzzle-tiedostona tai kopioi JV-KEY jakamista varten.</p>
-  <p><strong>Työkalut:</strong> Undo/Redo, vaihda koko, tyhjennä kenttä, täytä seinillä.</p>
-  <button id="closeHelpPopup" class="pixel-btn editor-btn" style="margin-top:12px; width:100%;">Sulje</button>
-</div>
-
-
-
-    <!-- Toolbar: Undo / Redo -->
-<!-- Toolbar -->
-<div id="editorToolbar">
-
-  <button id="undoBtn" class="rpg-btn" title="Undo">
-    <i class="fas fa-rotate-left"></i>
-  </button>
-
-  <button id="redoBtn" class="rpg-btn" title="Redo">
-    <i class="fas fa-rotate-right"></i>
-  </button>
-
-<button id="fillToolBtn" class="rpg-btn">
-  ⬛ Monivalinta
-</button>
-</div>
-
-
-  <!-- Projektin nimi ja tallenna -->
-  <div class="project-name-panel">
-    <label for="projectName">Kartan nimi:</label>
-    <input id="projectName" type="text" value="Projekti" class="pixel-input">
-    <button id="saveJVP" class="pixel-btn editor-btn">💾 Tallenna</button>
-  </div>
-<div class="style-panel">
-    <div class="tile-label" style="margin-bottom: 10px; font-size: 10px; color: #7c3aed;">
-        <i class="fas fa-paint-roller"></i> MAAILMAN TYYLI
-    </div>
-    
-    <select id="bgPreset" class="rpg-select" onchange="handleStyleChange(this.value)">
-        <option value="#0f172a">🌑 Oletus (Pimeä)</option>
-        <option value="#87CEEB">☀️ Päivätaivas</option>
-        <option value="#2d5a27">🌳 Nurmikko</option>
-        <option value="#1a1a1a">🕳️ Pimeä luola</option>
-        <option value="#4a90e2">🌊 Vesimaailma</option>
-        <option value="custom-color">🎨 Valitse oma väri...</option>
-        <option value="custom-image">🖼️ Oma taustakuva (URL)...</option>
-    </select>
-
-<div id="customColorArea" style="display:none; margin-top:10px;">
-    <input type="color" id="bgColorPicker" oninput="setWorldBg(this.value)">
-    <span class="tile-label" style="font-size:10px;">VALITSE VÄRI</span>
-</div>
-
-    <div id="customImageArea" style="display:none;">
-        <input type="text" id="bgUrlInput" class="rpg-input-field" placeholder="Liitä kuva-URL tästä..." onchange="setWorldImg(this.value)">
-        <div class="tile-label" style="font-size:7px; margin-top:2px;">PAINA ENTER TALLENTAAKSEKSI</div>
-    </div>
-</div>
-
-  <!-- Ohje / Peliopas -->
-
-
-  <!-- Paletti ja kontrollit -->
-  <div class="layout" style="margin-top:16px; gap:12px;">
-    <div>
-      <div class="palette-controls" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-
-      <div class="palette" id="palette">
-
-        <!-- Palette otsikko -->
-
-<div class="tile selected tile-empty" data-t="0" title="Tyhjä">
-  <i class="fas fa-square"></i>
-  <span class="tile-label">Tyhjä</span>
-</div>
-
-<div class="tile tile-wall" data-t="1" title="Seinä">
-  <i class="fas fa-border-style"></i>
-  <span class="tile-label">Seinä</span>
-</div>
-
-<div class="tile tile-goal" data-t="2" title="Maali">
-  <i class="fas fa-star"></i>
-  <span class="tile-label">Maali</span>
-</div>
-
-<div class="tile tile-key" data-t="3" title="Avain">
-  <i class="fas fa-key"></i>
-  <span class="tile-label">Avain</span>
-</div>
-
-<div class="tile tile-door" data-t="4" title="Ovi">
-  <i class="fas fa-door-open"></i>
-  <span class="tile-label">Ovi</span>
-</div>
-
-<div class="tile tile-trap" data-t="5" title="Ansa">
-  <i class="fas fa-skull-crossbones"></i>
-  <span class="tile-label">Ansa</span>
-</div>
-
-<div class="tile tile-tp-a" data-t="6" title="Teleportti A">
-  <i class="fas fa-location-arrow"></i>
-  <span class="tile-label">TP A</span>
-</div>
-
-<div class="tile tile-tp-b" data-t="7" title="Teleportti B">
-  <i class="fas fa-location-arrow"></i>
-  <span class="tile-label">TP B</span>
-</div>
-
-        </div>
-
-        <!-- Player & NPC -->
-        <button id="setPlayerBtn" class="pixel-btn play-btn">👤 Pelaaja</button>
-        <button id="addNpcBtn" class="pixel-btn hub-btn">🧝 Lisää NPC</button>
-      </div>
-
-      <!-- Resize ja editorin muut napit -->
-      <div class="resize-controls" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-        <label>Leveys: <input id="w" type="number" value="20" min="2" max="150"></label>
-        <label>Korkeus: <input id="h" type="number" value="20" min="2" max="150"></label>
-        <button id="resize" class="pixel-btn editor-btn">🔄 Vaihda koko</button>
-        <button id="clear" class="pixel-btn hub-btn">🗑 Tyhjennä</button>
-        <button id="fillWalls" class="pixel-btn play-btn">🧱 Täytä seinillä</button>
-      </div>
-
-      <!-- Editor Grid -->
-      <div id="editorGrid" style="max-height:640px; overflow:auto; border:4px solid #000; border-radius:8px; background:#020617; box-shadow: inset 0 0 0 2px rgba(255,255,255,0.05);"></div>
-
-      <!-- File input / export -->
-      <div style="margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-        <input id="fileInput" type="file" accept=".jvpuzzle,application/json" style="display:none">
-        <button id="loadFile" class="pixel-btn editor-btn">📂 Tuo editoriin</button>
-        <button id="exportBase64" class="pixel-btn hub-btn">📋 Kopioi JV-KEY</button>
+    <div style="margin-top: 12px;">
+      <label>Kartan koko</label>
+      <div class="resize-controls">
+        <input type="number" id="editorW" value="10" min="5" max="50">
+        <span>×</span>
+        <input type="number" id="editorH" value="10" min="5" max="50">
+        <button id="resize">↻ Muuta</button>
       </div>
     </div>
+
+    <div style="margin-top: 12px;">
+      <label>Väri</label>
+      <div class="palette" id="palette"></div>
+    </div>
+
+    <div style="margin-top: 12px;">
+      <label>NPC:t</label>
+      <button class="small" id="addNpcBtn">➕ Lisää NPC</button>
+    </div>
+
+    <div style="margin-top: 12px;">
+      <label>Toiminnot</label>
+      <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+        <button class="small undo-btn" id="undoBtn">↶ Undo</button>
+        <button class="small redo-btn" id="redoBtn">↷ Redo</button>
+        <button class="small" id="clear">🗑️ Tyhjennä</button>
+        <button class="small" id="fillWalls">🧱 Täytä seinät</button>
+      </div>
+    </div>
+
+    <div style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px;">
+      <button id="saveJVP" style="width: 100%;">💾 Tallenna .jvpuzzle</button>
+      <button id="setPlayerBtn" style="width: 100%; margin-top: 6px;">🎮 Aseta pelaaja</button>
+      <button id="playBtn" style="width: 100%; margin-top: 6px; background: linear-gradient(135deg, #22c55e, #16a34a); color: white; border: none; padding: 8px 16px; border-radius: 10px; cursor: pointer; font-weight: 700;">▶️ Pelaa</button>
+      <button id="backFromEditorBtn" style="width: 100%; margin-top: 6px; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #94a3b8; padding: 8px 16px; border-radius: 10px; cursor: pointer;">← Takaisin</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <label>Kartta</label>
+    <div id="editorGrid"></div>
   </div>
 </div>
 
-<div id="popupMessage" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-                              background-color: #333; color: #fff; padding: 10px 20px;
-                              border-radius: 8px; display: none; font-family: sans-serif;
-                              box-shadow: 0 0 10px rgba(0,0,0,0.3); z-index: 1000;">
+<!-- peli view -->
+<div class="app hidden" id="gameView">
+  <canvas id="playCanvas" width="512" height="512"></canvas>
+  <button id="backBtn" style="position: absolute; bottom: 20px; left: 20px; padding: 10px 20px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: white; cursor: pointer;">← Takaisin</button>
 </div>
 
-  <div id="playerArea" class="card" style="display:none">
-   <h1 class="pixel-section">Pelaa</h1>
-<div class="editor-controls">
-      <button id="playerLoadFile" class="small">Tuo .jvpuzzle kartta</button>
-      <input id="playerFileInput" type="file" accept=".jvpuzzle,application/json" style="display:none">
-      <button id="pasteBase64" class="small ghost">Liitä JV-KEY</button>
-    </div>
-    <img src="https://i.postimg.cc/FF0j6PYV/N-ytt-kuva-2025-09-10-071913.png" alt="Elements" width="500" height="333">
-    <div style="margin-top:12px">
-  <canvas id="playCanvas" width="640" height="640"></canvas>
-</div>
-
-    </div>
-  </div>
-</div>
-<div id="pastePopup" class="popup">
+<!-- Popupit -->
+<div class="popup" id="pastePopup">
   <div class="box">
-    <h3>Liitä JV-KEY</h3>
-    <textarea id="pasteInput" rows="6" style="width:100%; border-radius:8px; padding:6px; background:rgba(255,255,255,0.02); color:white; border:1px solid rgba(255,255,255,0.06);"></textarea>
-    <div style="margin-top:12px; display:flex; justify-content:space-between; gap:8px;">
-      <button id="pasteConfirm" class="small">Aloita peli</button>
-      <button id="pasteCancel" class="small ghost">Peruuta</button>
+    <h3>Liitä koodi</h3>
+    <textarea id="pasteArea" placeholder="Liitä .jvpuzzle-koodi tähän..." style="width: 100%; height: 150px;"></textarea>
+    <button id="doPasteBtn">Lataa</button>
+    <button class="ghost" onclick="document.getElementById('pastePopup').classList.remove('show')">Peruuta</button>
+  </div>
+</div>
+
+<div class="popup" id="npcPopup">
+  <div class="box" style="max-width: 500px; text-align: left;">
+    <h3>NPC</h3>
+    <label>Nimi</label>
+    <input type="text" id="npcName" placeholder="Kirjoita nimi...">
+    <label>Kuva (emoji tai URL)</label>
+    <input type="text" id="npcImage" placeholder="😊 tai https://...">
+    <label>Teksti</label>
+    <textarea id="npcText" placeholder="Mitä NPC sanoo?" style="height: 80px;"></textarea>
+    <div id="npcPreviewContainer">
+      <div id="npcPreview" style="font-size: 48px;">😊</div>
+    </div>
+    <div class="npc-popup-buttons">
+      <button id="saveNpcBtn">✓ Tallenna</button>
+      <button onclick="document.getElementById('npcPopup').classList.remove('show')">✕ Peruuta</button>
     </div>
   </div>
 </div>
 
-<div id="winPopup" class="popup">
-  <div class="box">
-    <h3>Voitit kentän! 🎉</h3>
-    <p>Hienoa työtä!</p>
-    <button id="closeWin">Sulje</button>
-  </div>
-</div>
-<div id="npcPopup" class="npc-popup">
-  <h2>NPC Editor</h2>
-  <div id="npcError" class="npc-error"></div>
-  <label>Nimi:</label>
-  <input id="npcName" type="text" placeholder="Kirjoita NPC:n nimi">
-  <label>Dialogi:</label>
-  <textarea id="npcDialog" placeholder="Kirjoita dialogi..."></textarea>
-  <label>Ulkonäkö:</label>
-  <select id="npcImageSelect"></select>
-  <div id="npcPreviewContainer">
-    <img id="npcPreview" src="" alt="Esikatselu">
-  </div>
+<div id="screenFlash"></div>
+<div id="popupMessage"></div>
 
-  <div class="npc-popup-buttons">
-    <button id="npcSave">Tallenna</button>
-    <button id="npcCancel">Peruuta</button>
-  </div>
-</div>
+<input type="file" id="fileInput" accept=".jvpuzzle" style="display: none;">
+<input type="color" id="colorPicker" style="display: none;">
 
-<!-- SETTINGS MODAL -->
-<div id="settingsModal" class="settings hidden">
-  <div class="settings-card">
-
-    <div class="settings-header">
-      <div class="settings-title">
-        <i class="fas fa-sliders"></i>
-        <span>Pelin asetukset</span>
-      </div>
-      <button id="settingsClose" class="settings-close">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    <div class="settings-content">
-      <section class="settings-section">
-        <h3>Kuvatila</h3>
-        <div class="mode-buttons">
-          <button data-mode="pixel" class="mode-btn active">Pixel Perfect</button>
-          <button data-mode="crt" class="mode-btn">NES CRT</button>
-        </div>
-        <p class="settings-copy">Pixel Perfect on puhdas ja tarkka. NES CRT tekee ruudusta vanhemman konsolityylisen scanlineilla ja kevyella kuvaputkifiiliksella.</p>
-      </section>
-      <section class="settings-section">
-        <h3>Musiikki</h3>
-
-  <div class="music-grid">
-    <!-- Puzzle Beat (oletus) -->
-    <div class="music-tile active"
-         data-src="https://raw.githubusercontent.com/ItzPixelmc/jvgamesassets/main/jvpuzzle-theme.mp3">
-      <img src="https://i.postimg.cc/kgk1WVcS/Nayttokuva-2026-02-02-210551.png" alt="Puzzle Beat">
-      <strong>Puzzle Beat</strong>
-      <span>JV Games</span>
-    </div>
-
-    <!-- soundtrack 2-->
-    <div class="music-tile"
-         data-src="https://raw.githubusercontent.com/ItzPixelmc/jvgamesassets/main/jvpuzzle-theme.mp3">
-      <img src="https://i.postimg.cc/kgk1WVcS/Nayttokuva-2026-02-02-210551.png" alt="Tulossa">
-      <strong>SOON</strong>
-      <span>Tulossa</span>
-    </div>
-
-  </div>
-
-<!-- VOLUME SLIDER -->
-        <div class="music-controls">
-          <button id="musicMuteBtn" class="music-mute-btn" type="button">Musiikki ON</button>
-          <div class="volume-wrap">
-            <div class="volume-label">
-              <span>Volyymi</span>
-              <span id="volumeValue">70%</span>
-            </div>
-            <input id="volumeSlider" type="range" min="0" max="100" value="70" aria-label="Musiikin voimakkuus">
-          </div>
-        </div>
-
-</section>
-<!--
-  // Asetetaan alkuperäinen volume
-  bgm.volume = volumeSlider.value / 100;
-
-  // MUSIC TILE CLICK
-  document.querySelectorAll(".music-tile").forEach(tile => {
-    tile.addEventListener("click", () => {
-      // Poistetaan active muilta
-      document.querySelectorAll(".music-tile").forEach(t => t.classList.remove("active"));
-      tile.classList.add("active");
-
-      // Vaihdetaan musiikki
-      bgm.src = tile.dataset.src;
-      bgm.load();
-      bgm.play().catch(err => console.warn("Autoplay estetty:", err));
-
-      // Pidetään volume samana
-      bgm.volume = volumeSlider.value / 100;
-    });
-  });
-
-  // VOLUME SLIDER
-  volumeSlider.addEventListener("input", (e) => {
-    bgm.volume = e.target.value / 100;
-  });
-
-  // AUTOPLAY CLICK (jos selain estää autoplayn)
-  document.addEventListener("click", () => {
-    if (bgm.paused) {
-      bgm.play().catch(()=>{});
-    }
-  }, { once: true });
-});
--->
-
-
-    </div>
-  </div>
-</div>
 <script>
-// --- Perustila
-let state = {
-  width: 20,
-  height: 20,
-  grid: [],
-  player: {x:1, y:1},
-  selectedTile: 0,
-  placingPlayerMode: false,
-  npcs: []
+'use strict';
+
+// === GAME STATE ===
+let gameState = {
+  width: 10,
+  height: 10,
+  tiles: [],
+  playerX: 0,
+  playerY: 0,
+  npcs: [],
+  projectName: 'Uusi Projekti',
+  backgroundSettings: {
+    type: 'color',
+    value: '#071127'
+  }
 };
 
-let playState = null,
-    camera = {x:0, y:0},
-    hasKey = false,
-    teleportA = null,
-    teleportB = null;
+let editorState = {
+  selectedType: 1,
+  isDraggingPaint: false,
+  history: [],
+  historyIndex: -1
+};
 
-// EDITORIN tausta
-let worldBgColor = "#0f172a";
-let worldBgImg = "";
+// === UTILITY FUNCTIONS ===
 
-// PELIN oma tausta
-let playBgColor = "#0f172a";
-let playBgImg = "";
-
-let selectedBackground = null;
-let currentTool = "draw";
-let selectionStart = null;
-
-// taustakerros
-let backgroundGrid = [];
-
-const MAX_SIZE = 200,
-      VIEW_W = 20,
-      VIEW_H = 20;
-
-
-const openEditor = document.getElementById('openEditor'),
-      openPlayer = document.getElementById('openPlayer'),
-      editorArea = document.getElementById('editorArea'),
-      playerArea = document.getElementById('playerArea'),
-      palette = document.getElementById('palette'),
-      editorGrid = document.getElementById('editorGrid'),
-      wInput = document.getElementById('w'),
-      hInput = document.getElementById('h'),
-      resizeBtn = document.getElementById('resize'),
-      clearBtn = document.getElementById('clear'),
-      fillWallsBtn = document.getElementById('fillWalls'),
-      setPlayerBtn = document.getElementById('setPlayerBtn'),
-      saveJVP = document.getElementById('saveJVP'),
-      fileInput = document.getElementById('fileInput'),
-      loadFileBtn = document.getElementById('loadFile'),
-      exportBase64Btn = document.getElementById('exportBase64'),
-      projectNameInput = document.getElementById('projectName'),
-      playerLoadFile = document.getElementById('playerLoadFile'),
-      playerFileInput = document.getElementById('playerFileInput'),
-      pasteBase64Btn = document.getElementById('pasteBase64'),
-      playCanvas = document.getElementById('playCanvas'),
-      playCtx = playCanvas.getContext('2d'),
-      winPopup = document.getElementById('winPopup'),
-      closeWin = document.getElementById('closeWin'),
-      npcImageSelect = document.getElementById('npcImageSelect'),
-      npcPreview = document.getElementById('npcPreview'),
-      npcPopup = document.getElementById('npcPopup'),
-      npcNameInput = document.getElementById('npcName'),
-      npcDialogInput = document.getElementById('npcDialog'),
-      npcSaveBtn = document.getElementById('npcSave'),
-      npcCancel = document.getElementById('npcCancel'),
-      addNpcBtn = document.getElementById('addNpcBtn'),
-      pastePopup = document.getElementById('pastePopup'),
-      pasteInput = document.getElementById('pasteInput'),
-      pasteConfirm = document.getElementById('pasteConfirm'),
-      pasteCancel = document.getElementById('pasteCancel');
-
-
-
-
-
-      const npcError = document.getElementById('npcError');
-
-function showNpcError(msg){
-  npcError.textContent = msg;
-  npcError.style.display = 'block';
-  npcPopup.classList.remove('shake');
-  void npcPopup.offsetWidth;
-  npcPopup.classList.add('shake');
-  setTimeout(() => { npcError.style.display = 'none'; }, 2200);
+function initGrid(width, height) {
+  gameState.tiles = Array(height).fill(null).map(() => Array(width).fill(0));
+  gameState.width = width;
+  gameState.height = height;
 }
 
-// --- NPC:t
-const npcImages = [
-  { name: 'Nainen', url: 'https://art.pixilart.com/4f368bad5c9666f.png' },
-  { name: 'Maalari', url: 'https://art.pixilart.com/sr5z52350dff8caws3.png' },
-  { name: 'Opas', url: 'https://art.pixilart.com/sr21ab1a3a532aws3.png' },
-  { name: 'Rakentaja', url: 'https://art.pixilart.com/sr5zd705b47d9daws3.png' }
-];
-
-// --- Ladataan NPC-optio select
-npcImages.forEach((img,i)=>{
-  const opt = document.createElement('option');
-  opt.value = i; opt.textContent = img.name;
-  npcImageSelect.appendChild(opt);
-});
-
-npcImageSelect.addEventListener('change', ()=>{
-  const idx = parseInt(npcImageSelect.value);
-  npcPreview.src = npcImages[idx].url;
-});
-
-let pendingNpcPos = null;
-
-// --- Apufunktiot
-function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
-function makeEmptyGrid(w,h,val=0){
-  return new Array(w*h).fill(val);
-}
-
-function initState(){
-  state.width = clamp(parseInt(wInput.value)||20,4,MAX_SIZE);
-  state.height = clamp(parseInt(hInput.value)||20,4,MAX_SIZE);
-
-  state.grid = makeEmptyGrid(state.width,state.height);
-  backgroundGrid = makeEmptyGrid(state.width,state.height,"");
-
-  state.player = {x:1,y:1};
-}
-
-// --- Undo/Redo
-const undoStack = [];
-const redoStack = [];
-const MAX_HISTORY = 50;
-
-function snapshotState() {
-  return {
-    grid: state.grid.slice(),
-    player: {...state.player},
-    npcs: state.npcs.map(n => ({...n})),
-width: state.width,
-height: state.height,
-backgroundGrid: backgroundGrid.slice()
+function saveToHistory() {
+  const snapshot = {
+    tiles: gameState.tiles.map(row => [...row]),
+    playerX: gameState.playerX,
+    playerY: gameState.playerY,
+    npcs: JSON.parse(JSON.stringify(gameState.npcs))
   };
-}
-
-function restoreState(snap) {
-  state.grid = snap.grid.slice();
-  state.player = {...snap.player};
-  state.npcs = snap.npcs.map(n => ({...n}));
-  state.width = snap.width;
-  backgroundGrid = snap.backgroundGrid || makeEmptyGrid(state.width,state.height,"");
-
-  wInput.value = state.width;
-  hInput.value = state.height;
-
-  buildGrid();
-}
-
-function pushUndoState() {
-  undoStack.push(snapshotState());
-  if (undoStack.length > MAX_HISTORY) undoStack.shift();
-  redoStack.length = 0;
+  editorState.historyIndex++;
+  editorState.history = editorState.history.slice(0, editorState.historyIndex);
+  editorState.history.push(snapshot);
+  if (editorState.history.length > 50) {
+    editorState.history.shift();
+    editorState.historyIndex--;
+  }
 }
 
 function undo() {
-  if (!undoStack.length) return;
-  redoStack.push(snapshotState());
-  restoreState(undoStack.pop());
+  if (editorState.historyIndex > 0) {
+    editorState.historyIndex--;
+    const snapshot = editorState.history[editorState.historyIndex];
+    gameState.tiles = snapshot.tiles.map(row => [...row]);
+    gameState.playerX = snapshot.playerX;
+    gameState.playerY = snapshot.playerY;
+    gameState.npcs = JSON.parse(JSON.stringify(snapshot.npcs));
+    renderGrid();
+  }
 }
 
 function redo() {
-  if (!redoStack.length) return;
-  undoStack.push(snapshotState());
-  restoreState(redoStack.pop());
+  if (editorState.historyIndex < editorState.history.length - 1) {
+    editorState.historyIndex++;
+    const snapshot = editorState.history[editorState.historyIndex];
+    gameState.tiles = snapshot.tiles.map(row => [...row]);
+    gameState.playerX = snapshot.playerX;
+    gameState.playerY = snapshot.playerY;
+    gameState.npcs = JSON.parse(JSON.stringify(snapshot.npcs));
+    renderGrid();
+  }
 }
 
-let didPushDrawUndo = false;
+// === EDITOR GRID ===
 
-// --- Bind nappulat
+function renderGrid() {
+  const gridEl = document.getElementById('editorGrid');
+  gridEl.innerHTML = '';
+  
+  for (let y = 0; y < gameState.height; y++) {
+    for (let x = 0; x < gameState.width; x++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.setAttribute('data-x', x);
+      cell.setAttribute('data-y', y);
+      cell.setAttribute('data-t', gameState.tiles[y][x]);
+      
+      if (gameState.playerX === x && gameState.playerY === y) {
+        cell.classList.add('player');
+      }
+      
+      cell.addEventListener('mousedown', cellMouseDown);
+      cell.addEventListener('mouseover', cellMouseOver);
+      cell.addEventListener('mouseup', cellMouseUp);
+      cell.addEventListener('mouseleave', cellMouseUp);
+      
+      gridEl.appendChild(cell);
+    }
+  }
+}
+
+function cellMouseDown(e) {
+  editorState.isDraggingPaint = true;
+  paintCell(e.target);
+}
+
+function cellMouseOver(e) {
+  if (editorState.isDraggingPaint && e.buttons === 1) {
+    paintCell(e.target);
+  }
+}
+
+function cellMouseUp(e) {
+  editorState.isDraggingPaint = false;
+}
+
+function paintCell(cellEl) {
+  if (!cellEl.classList.contains('cell')) return;
+  const x = parseInt(cellEl.getAttribute('data-x'));
+  const y = parseInt(cellEl.getAttribute('data-y'));
+  gameState.tiles[y][x] = editorState.selectedType;
+  cellEl.setAttribute('data-t', editorState.selectedType);
+}
+
+// === SAVE / LOAD ===
+
+function exportJVP() {
+  const data = {
+    v: 1,
+    name: gameState.projectName,
+    w: gameState.width,
+    h: gameState.height,
+    tiles: gameState.tiles,
+    px: gameState.playerX,
+    py: gameState.playerY,
+    npcs: gameState.npcs,
+    bg: gameState.backgroundSettings
+  };
+  return btoa(JSON.stringify(data));
+}
+
+function importJVP(code) {
+  try {
+    const data = JSON.parse(atob(code));
+    if (data.v !== 1) throw new Error('Invalid format');
+    
+    gameState.projectName = data.name || 'Projekti';
+    gameState.width = data.w;
+    gameState.height = data.h;
+    gameState.tiles = data.tiles || [];
+    gameState.playerX = data.px || 0;
+    gameState.playerY = data.py || 0;
+    gameState.npcs = data.npcs || [];
+    gameState.backgroundSettings = data.bg || { type: 'color', value: '#071127' };
+    
+    if (gameState.tiles.length !== gameState.height ||
+        (gameState.tiles.length > 0 && gameState.tiles[0].length !== gameState.width)) {
+      throw new Error('Tile data mismatch');
+    }
+    
+    return true;
+  } catch (err) {
+    console.error('Import error:', err);
+    return false;
+  }
+}
+
+// === COLOR PICKER ===
+
+function setupColorPicker() {
+  const picker = document.getElementById('colorPicker');
+  picker.addEventListener('change', (e) => {
+    editorState.selectedType = 8;
+    gameState.backgroundSettings.type = 'custom-color';
+    gameState.backgroundSettings.value = e.target.value;
+    renderPalette();
+  });
+}
+
+// === PALETTE ===
+
+function renderPalette() {
+  const paletteEl = document.getElementById('palette');
+  paletteEl.innerHTML = '';
+  
+  const tiles = [
+    { type: 0, label: '⬜ Tyhjä', color: 'transparent' },
+    { type: 1, label: '🟫 Seinä', color: '#1f2937' },
+    { type: 2, label: '🟨 Lava', color: '#fef3c7' },
+    { type: 3, label: '🟡 Kulta', color: '#facc15' },
+    { type: 4, label: '🟢 Vihreä', color: '#10b981' },
+    { type: 5, label: '🔴 Punainen', color: '#ef4444' },
+    { type: 6, label: '🟣 Violetti', color: '#8b5cf6' },
+    { type: 7, label: '🩷 Pinkki', color: '#ec4899' }
+  ];
+  
+  tiles.forEach(tile => {
+    const tileEl = document.createElement('div');
+    tileEl.className = 'tile';
+    if (editorState.selectedType === tile.type) {
+      tileEl.classList.add('selected');
+    }
+    tileEl.style.backgroundColor = tile.color;
+    tileEl.title = tile.label;
+    tileEl.addEventListener('click', () => {
+      editorState.selectedType = tile.type;
+      renderPalette();
+    });
+    paletteEl.appendChild(tileEl);
+  });
+  
+  const customTile = document.createElement('div');
+  customTile.className = 'tile';
+  customTile.textContent = '🎨';
+  customTile.title = 'Mukautettu väri';
+  customTile.addEventListener('click', () => {
+    document.getElementById('colorPicker').click();
+  });
+  paletteEl.appendChild(customTile);
+}
+
+// === GAME RENDER ===
+
+function renderGame() {
+  const canvas = document.getElementById('playCanvas');
+  const ctx = canvas.getContext('2d');
+  const tileSize = canvas.width / gameState.width;
+  
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  for (let y = 0; y < gameState.height; y++) {
+    for (let x = 0; x < gameState.width; x++) {
+      const type = gameState.tiles[y][x];
+      const px = x * tileSize;
+      const py = y * tileSize;
+      
+      const colors = ['#1a1a1a', '#1f2937', '#fef3c7', '#facc15', '#10b981', '#ef4444', '#8b5cf6', '#ec4899'];
+      ctx.fillStyle = type < colors.length ? colors[type] : '#1a1a1a';
+      ctx.fillRect(px, py, tileSize, tileSize);
+      
+      ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(px, py, tileSize, tileSize);
+    }
+  }
+  
+  if (gameState.playerX >= 0 && gameState.playerX < gameState.width &&
+      gameState.playerY >= 0 && gameState.playerY < gameState.height) {
+    const px = gameState.playerX * tileSize;
+    const py = gameState.playerY * tileSize;
+    ctx.fillStyle = 'rgba(96,165,250,0.8)';
+    ctx.fillRect(px, py, tileSize, tileSize);
+  }
+}
+
+// === SHOW / HIDE ===
+
+function showEditor() {
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('editor').classList.remove('hidden');
+  document.getElementById('gameView').classList.add('hidden');
+  document.body.classList.remove('game-mode');
+  document.getElementById('gameEmptyBanner').classList.add('hidden');
+  renderGrid();
+  renderPalette();
+}
+
+function showGame() {
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('editor').classList.add('hidden');
+  document.getElementById('gameView').classList.remove('hidden');
+  document.body.classList.add('game-mode');
+  
+  if (gameState.width === 0 || gameState.height === 0 || gameState.tiles.length === 0) {
+    document.getElementById('gameEmptyBanner').classList.remove('hidden');
+  } else {
+    document.getElementById('gameEmptyBanner').classList.add('hidden');
+  }
+  
+  renderGame();
+}
+
+function showStart() {
+  document.getElementById('app').classList.remove('hidden');
+  document.getElementById('editor').classList.add('hidden');
+  document.getElementById('gameView').classList.add('hidden');
+  document.body.classList.remove('game-mode');
+  document.getElementById('gameEmptyBanner').classList.add('hidden');
+}
+
+// === EVENT LISTENERS ===
+
+document.getElementById('newBtn').addEventListener('click', () => {
+  initGrid(10, 10);
+  gameState.projectName = 'Uusi Projekti';
+  gameState.playerX = 0;
+  gameState.playerY = 0;
+  gameState.npcs = [];
+  editorState.history = [];
+  editorState.historyIndex = -1;
+  document.getElementById('projectName').value = gameState.projectName;
+  showEditor();
+});
+
+document.getElementById('loadBtn').addEventListener('click', () => {
+  document.getElementById('fileInput').click();
+});
+
+document.getElementById('fileInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    const content = event.target.result;
+    if (importJVP(content)) {
+      document.getElementById('projectName').value = gameState.projectName;
+      editorState.history = [];
+      editorState.historyIndex = -1;
+      showEditor();
+    } else {
+      alert('Virhe: Tiedoston lataaminen epäonnistui');
+    }
+  };
+  reader.readAsText(file);
+});
+
+document.getElementById('saveJVP').addEventListener('click', () => {
+  gameState.projectName = document.getElementById('projectName').value || 'Projekti';
+  const code = exportJVP();
+  
+  const link = document.createElement('a');
+  link.href = 'data:text/plain,' + encodeURIComponent(code);
+  link.download = gameState.projectName + '.jvpuzzle';
+  link.click();
+});
+
+document.getElementById('resize').addEventListener('click', () => {
+  const w = parseInt(document.getElementById('editorW').value);
+  const h = parseInt(document.getElementById('editorH').value);
+  if (w > 0 && h > 0 && w <= 50 && h <= 50) {
+    saveToHistory();
+    initGrid(w, h);
+    renderGrid();
+  }
+});
+
+document.getElementById('clear').addEventListener('click', () => {
+  saveToHistory();
+  initGrid(gameState.width, gameState.height);
+  renderGrid();
+});
+
+document.getElementById('fillWalls').addEventListener('click', () => {
+  saveToHistory();
+  gameState.tiles = gameState.tiles.map(row => row.map(() => 1));
+  renderGrid();
+});
+
+document.getElementById('setPlayerBtn').addEventListener('click', () => {
+  alert('Klikkaa ruutua, josta pelaaja aloittaa');
+  const gridEl = document.getElementById('editorGrid');
+  const handleClick = (e) => {
+    if (e.target.classList.contains('cell')) {
+      gameState.playerX = parseInt(e.target.getAttribute('data-x'));
+      gameState.playerY = parseInt(e.target.getAttribute('data-y'));
+      renderGrid();
+      gridEl.removeEventListener('click', handleClick);
+    }
+  };
+  gridEl.addEventListener('click', handleClick);
+});
+
+document.getElementById('playBtn').addEventListener('click', () => {
+  saveToHistory();
+  showGame();
+});
+
+document.getElementById('backFromEditorBtn').addEventListener('click', () => {
+  showStart();
+});
+
+document.getElementById('backBtn').addEventListener('click', () => {
+  showStart();
+});
+
 document.getElementById('undoBtn').addEventListener('click', undo);
 document.getElementById('redoBtn').addEventListener('click', redo);
 
-// --- Pikanäppäimet
-document.addEventListener('keydown', e => {
-  if (editorArea.style.display === 'none') return;
-  if (e.ctrlKey && e.key.toLowerCase() === 'z') { e.preventDefault(); undo(); }
-  if (e.ctrlKey && (e.key.toLowerCase() === 'y' || (e.shiftKey && e.key.toLowerCase() === 'z'))) { e.preventDefault(); redo(); }
+document.getElementById('addNpcBtn').addEventListener('click', () => {
+  document.getElementById('npcPopup').classList.add('show');
+  document.getElementById('npcName').value = '';
+  document.getElementById('npcImage').value = '😊';
+  document.getElementById('npcText').value = '';
+  document.getElementById('npcPreview').textContent = '😊';
 });
 
-
-// --- Flash
-function flashScreen(color = 'red', duration = 150) {
-  const el = document.getElementById('screenFlash');
-  if(color === 'purple') el.style.background = 'rgba(139,92,246,0.45)'; // violet
-  else el.style.background = 'rgba(239,68,68,0.45)'; // punainen default
-
-  el.classList.add('show');
-
-  setTimeout(() => {
-    el.classList.remove('show');
-  }, duration);
-}
-
-
-// --- Editor grid
-function buildGrid(){
-  editorGrid.innerHTML='';
-  editorGrid.style.width = (state.width*30+20)+'px';
-  for(let y=0;y<state.height;y++){
-    const row = document.createElement('div'); row.style.display='flex';
-    for(let x=0;x<state.width;x++){
-      const idx = y*state.width + x;
-      const cell = document.createElement('div'); cell.className='cell';
-      const bg = backgroundGrid[idx];
-
-if(bg){
-  if(bg.startsWith("http")){
-    cell.style.backgroundImage = `url('${bg}')`;
-    cell.style.backgroundSize = "cover";
-    cell.style.backgroundPosition = "center";
-  }else{
-    cell.style.background = bg;
-  }
-}
-      cell.dataset.x=x; cell.dataset.y=y; cell.dataset.t=state.grid[idx];
-      if(state.player.x===x && state.player.y===y) cell.classList.add('player');
-      const npcHere = state.npcs.find(n=>n.x===x && n.y===y);
-      if(npcHere){
-        const img=document.createElement('img');
-        img.src=npcImages[npcHere.img].url;
-        img.style.width='24px'; img.style.height='24px';
-        img.style.position='absolute'; img.style.left='50%'; img.style.top='50%';
-        img.style.transform='translate(-50%,-50%)'; cell.style.position='relative';
-        cell.appendChild(img);
-      }
-      let selectedBackground = null;
-let currentTool = "draw";
-let selectionStart = null;
-    cell.addEventListener('click',()=>{
-
-  if(selectionStart && currentTool === "fill"){
-    pushUndoState();
-
-    const startX = Math.min(selectionStart.x, x);
-    const startY = Math.min(selectionStart.y, y);
-
-    const endX = Math.max(selectionStart.x, x);
-    const endY = Math.max(selectionStart.y, y);
-
-    for(let yy=startY; yy<=endY; yy++){
-      for(let xx=startX; xx<=endX; xx++){
-
-        const fillIdx = yy * state.width + xx;
-
-        if(selectedBackground){
-          backgroundGrid[fillIdx] = selectedBackground;
-        }else{
-          state.grid[fillIdx] = state.selectedTile;
-        }
-
-      }
-    }
-
-    selectionStart = null;
-    buildGrid();
-    return;
-  }
-
-  if(currentTool === "fill"){
-    selectionStart = {x,y};
-    cell.style.outline = "3px solid yellow";
-    return;
-  }
-
-  if(pendingNpcPos){
-    if(!pendingNpcPos.edit){
-      pendingNpcPos.x=x;
-      pendingNpcPos.y=y;
-      openNpcPopup();
-    }else{
-      editNpcAt(x,y);
-    }
-    return;
-  }
-
-  if(state.placingPlayerMode){
-    pushUndoState();
-    state.player={x,y};
-    state.placingPlayerMode=false;
-    setPlayerBtn.textContent='Aseta pelaaja';
-    buildGrid();
-    return;
-  }
-
-  pushUndoState();
-
-  if(selectedBackground){
-    backgroundGrid[idx] = selectedBackground;
-  }else{
-    state.grid[idx] = state.selectedTile;
-  }
-
-  buildGrid();
-});
-      row.appendChild(cell);
-    }
-    editorGrid.appendChild(row);
-  }
-}
-
-// Hallitaan taustaa yhdestä paikasta
-function setWorldStyle(color, imgUrl = "") {
-    worldBgColor = color;
-    worldBgImg = imgUrl;
-
-    // 1. Päivitetään peli-canvas
-    const pCanvas = document.getElementById("playCanvas");
-    if (pCanvas) {
-        pCanvas.style.backgroundColor = worldBgColor;
-        pCanvas.style.backgroundImage = imgUrl ? `url('${imgUrl}')` : "none";
-        pCanvas.style.backgroundSize = "cover";
-    }
-
-    // 2. Päivitetään editorin tausta
-    const eGrid = document.getElementById("editorGrid");
-    if (eGrid) {
-        eGrid.style.backgroundColor = worldBgColor;
-        eGrid.style.backgroundImage = imgUrl ? `url('${imgUrl}')` : "none";
-        eGrid.style.backgroundSize = "cover";
-    }
-
-    // Piirretään peli heti uudestaan
-    if (playState) drawPlay();
-}
-
-// Tämä funktio kytketään dropdowniin (select)
-function handleStyleChange(value) {
-    const colorArea = document.getElementById('customColorArea');
-    const imageArea = document.getElementById('customImageArea');
-    
-    // Piilotetaan säädöt aluksi
-    colorArea.style.display = 'none';
-    imageArea.style.display = 'none';
-
-    if (value === "custom-color") {
-        colorArea.style.display = 'flex';
-    } else if (value === "custom-image") {
-        imageArea.style.display = 'block';
-    } else if (value !== "") {
-        // Jos valitaan valmis teema (esim. #87CEEB)
-        setWorldStyle(value);
-    }
-}
-function setWorldImg(url){
-  worldBgImg = url;
-
-  const eGrid = document.getElementById("editorGrid");
-
-  eGrid.style.backgroundImage = `url('${url}')`;
-  eGrid.style.backgroundSize = "cover";
-}
-// Päivitetty drawPlay paksunnetuilla reunoilla
-function drawPlay() {
-    if (!playState) return;
-    const size = Math.floor(playCanvas.width / VIEW_W);
-    playCtx.clearRect(0, 0, playCanvas.width, playCanvas.height);
-
-    for (let y = 0; y < VIEW_H; y++) {
-        for (let x = 0; x < VIEW_W; x++) {
-            const px = x + camera.x, py = y + camera.y;
-            if (px >= playState.w || py >= playState.h) continue;
-const bg = playState.backgroundGrid?.[py*playState.w+px];
-
-if(bg){
-
-  if(bg.startsWith("http")){
-
+document.getElementById('npcImage').addEventListener('input', (e) => {
+  const preview = document.getElementById('npcPreview');
+  const val = e.target.value;
+  if (val.startsWith('http')) {
     const img = new Image();
-    img.src = bg;
-
-    playCtx.drawImage(
-      img,
-      x*size,
-      y*size,
-      size,
-      size
-    );
-
-  }else{
-
-    playCtx.fillStyle = bg;
-    playCtx.fillRect(
-      x*size,
-      y*size,
-      size,
-      size
-    );
-
-  }
-
-}
-            const t = playState.map[py * playState.w + px];
-            if (t === 0) continue;
-
-            // Täyttöväri
-            playCtx.fillStyle = ['#0000', '#374151', '#fde68a', '#facc15', '#10b981', '#ef4444', '#8b5cf6', '#ec4899'][t];
-            playCtx.fillRect(x * size, y * size, size, size);
-
-            // PAKSUT REUNAT (Kuten pyysit)
-            playCtx.strokeStyle = "#000";
-            playCtx.lineWidth = 4; // Selkeä RPG-viiva
-            playCtx.strokeRect(x * size + 2, y * size + 2, size - 4, size - 4);
-            
-            // Pieni korostus sisäreunaan
-            playCtx.strokeStyle = "rgba(255,255,255,0.1)";
-            playCtx.lineWidth = 1;
-            playCtx.strokeRect(x * size + 4, y * size + 4, size - 8, size - 8);
-        }
-    }
-    // Pelaajan ja NPC-hahmojen piirto tästä eteenpäin...
-    renderCharacters(size); 
-    // Lisää tämä drawPlay-funktion loppuun, juuri ennen funktion sulkevaa aaltosulkea }
-function drawHUD() {
-    const relX = playState.player.x - playState.start.x;
-    const relY = playState.start.y - playState.player.y; // Y kasvaa ylöspäin RPG-tyylillä
-
-    playCtx.fillStyle = "rgba(0,0,0,0.5)";
-    playCtx.fillRect(10, 10, 120, 30);
-    playCtx.strokeStyle = "white";
-    playCtx.lineWidth = 1;
-    playCtx.strokeRect(10, 10, 120, 30);
-
-    playCtx.fillStyle = "#fff";
-    playCtx.font = "10px 'Press Start 2P'";
-    playCtx.fillText(`X:${relX} Y:${relY}`, 20, 30);
-}
-// Kutsu tätä drawPlay():n lopussa
-}
-
-// --- NPC-editori
-function openNpcPopup(name='',dialog='',imgIdx=null){
-  npcNameInput.value=name; npcDialogInput.value=dialog;
-  const idx = imgIdx!==null ? imgIdx : parseInt(npcImageSelect.value);
-  npcImageSelect.value=idx; npcPreview.src=npcImages[idx].url;
-  openPopup(npcPopup); npcNameInput.focus();
-}
-npcSaveBtn.addEventListener('click',()=>{
-  const name=npcNameInput.value.trim(), dialog=npcDialogInput.value.trim();
-  if(!name){ showNpcError('❗ Anna NPC:lle nimi'); return; }
-  if(pendingNpcPos.edit){
-    const npc=state.npcs.find(n=>n.x===pendingNpcPos.x && n.y===pendingNpcPos.y);
-    Object.assign(npc,{name,dialog,img:+npcImageSelect.value});
-  }else{
-    state.npcs.push({x:pendingNpcPos.x, y:pendingNpcPos.y, name, dialog, img:+npcImageSelect.value});
-  }
-  pendingNpcPos=null; closePopup(npcPopup); buildGrid();
-});
-npcCancel.addEventListener('click',()=>{ pendingNpcPos=null; closePopup(npcPopup); });
-addNpcBtn.addEventListener('click',()=>{ pendingNpcPos={x:null,y:null,edit:false}; showMessage('Valitse ruutu, mihin NPC lisätään.'); });
-
-// --- Popups
-function showWinPopup(){ winPopup.classList.add('show'); window.addEventListener('keydown',function onKey(e){if(['Escape','Enter',' '].includes(e.key)){hideWinPopup();}},{once:true}); }
-function hideWinPopup(){ winPopup.classList.remove('show'); }
-closeWin.addEventListener('click',hideWinPopup);
-function showMessage(msg,duration=2000){ const popup=document.getElementById('popupMessage'); popup.textContent=msg; popup.style.display='block'; setTimeout(()=>{popup.style.display='none';},duration);}
-winPopup.addEventListener('click',e=>{if(e.target===winPopup) hideWinPopup();});
-function openPopup(el){ document.body.classList.add('popup-open'); el.classList.add('show'); }
-function closePopup(el){ el.classList.remove('show'); if(document.querySelectorAll('.popup.show, .npc-popup.show').length===0){document.body.classList.remove('popup-open');} }
-
-// --- Navigation
-openEditor.addEventListener('click',()=>{ editorArea.style.display='block'; playerArea.style.display='none'; });
-openPlayer.addEventListener('click',()=>{ playerArea.style.display='block'; editorArea.style.display='none'; });
-
-// --- Palette
-palette.addEventListener('click',e=>{
-  const t=e.target.closest('.tile'); if(!t) return;
-  document.querySelectorAll('.tile').forEach(el=>el.classList.remove('selected'));
-  t.classList.add('selected'); state.selectedTile=parseInt(t.dataset.t,10);
-  selectedBackground = null;
-});
-
-// --- Editor actions
-resizeBtn.addEventListener('click',()=>{
-  const newW=clamp(parseInt(wInput.value)||20,4,MAX_SIZE);
-  const newH=clamp(parseInt(hInput.value)||20,4,MAX_SIZE);
-  const newGrid=makeEmptyGrid(newW,newH);
-  for(let y=0;y<Math.min(newH,state.height);y++){
-    for(let x=0;x<Math.min(newW,state.width);x++){ newGrid[y*newW+x]=state.grid[y*state.width+x]||0; }
-  }
-  state.width=newW; state.height=newH; state.grid=newGrid; buildGrid();
-});
-clearBtn.addEventListener('click',()=>{ pushUndoState(); state.grid=makeEmptyGrid(state.width,state.height); state.npcs=[]; buildGrid(); });
-fillWallsBtn.addEventListener('click',()=>{ state.grid=new Array(state.width*state.height).fill(1); buildGrid(); });
-setPlayerBtn.addEventListener('click',()=>{ state.placingPlayerMode=true; setPlayerBtn.textContent='Klikkaa ruutua asettaaksesi pelaajan'; });
-
-// --- Save/Load Päivitys ---
-
-function getProjectObject() {
-
-  return {
-    width: state.width,
-    height: state.height,
-
-    grid: state.grid,
-
-    player: state.player,
-
-    npcs: state.npcs,
-
-    worldBgColor,
-    worldBgImg,
-
-    playBgColor,
-    playBgImg,
-
-    backgroundGrid,
-
-    meta: {
-      name: projectNameInput.value || 'project',
-      created: new Date().toISOString()
-    }
-  };
-
-
-}
-function setWorldBg(color){
-  worldBgColor = color;
-  worldBgImg = "";
-
-  const eGrid = document.getElementById("editorGrid");
-
-  eGrid.style.backgroundColor = color;
-  eGrid.style.backgroundImage = "none";
-}
-function downloadObjectAsFile(obj, filename) {
-  const text = JSON.stringify(obj, null, 2);
-  const blob = new Blob([text], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1500);
-}
-
-// Napit
-saveJVP.addEventListener('click', () => {
-  const proj = getProjectObject();
-  const ts = Math.floor(Date.now() / 1000);
-  downloadObjectAsFile(proj, (projectNameInput.value || 'project') + '_' + ts + '.jvpuzzle');
-});
-
-loadFileBtn.addEventListener('click', () => fileInput.click());
-
-fileInput.addEventListener('change', e => {
-  const f = e.target.files[0];
-  if (!f) return;
-  const r = new FileReader();
-  r.onload = ev => {
-    try {
-      applyProject(JSON.parse(ev.target.result));
-    } catch (err) {
-      alert('Tiedoston lukeminen epäonnistui: ' + err.message);
-    }
-  };
-  r.readAsText(f);
-});
-
-exportBase64Btn.addEventListener('click', () => {
-  const proj = getProjectObject();
-  const str = btoa(JSON.stringify(proj)); // Base64 export
-  const ta = document.createElement('textarea');
-  ta.value = str;
-  document.body.appendChild(ta);
-  ta.select();
-  try {
-    document.execCommand('copy');
-    showMessage('JV-KEY kopioitu leikepöydälle!');
-  } catch {
-    prompt('Kopioi JV-KEY tästä:', str);
-  }
-  document.body.removeChild(ta);
-});
-
-// --- Latausfunktio (Apply) ---
-function applyProject(p) {
-  if (!p.width || !p.height || !p.grid) {
-    alert('Ei kelvollinen projekti');
-    return;
-  }
-  
-  // Perusasetukset
-  state.width = p.width;
-  state.height = p.height;
-  state.grid = p.grid.slice(0);
-  backgroundGrid = p.backgroundGrid || makeEmptyGrid(p.width,p.height,"");
-  state.player = p.player || { x: 1, y: 1 };
-  state.npcs = p.npcs || [];
-  
-  // UI päivitykset
-  wInput.value = state.width;
-  hInput.value = state.height;
-  projectNameInput.value = p.meta?.name || projectNameInput.value;
-
-  // LISÄTTY: Teeman lataus
-  if (p.theme) {
-worldBgColor = p.worldBgColor || "#0f172a";
-worldBgImg = p.worldBgImg || "";
-
-playBgColor = p.playBgColor || "#0f172a";
-playBgImg = p.playBgImg || "";
-    updateCanvasDisplay(); // Päivittää canvaksen taustan
-    
-    // Päivitetään myös valitsimien arvot UI:ssa
-    if(document.getElementById('bgColorPicker')) 
-       document.getElementById('bgColorPicker').value = worldBgColor;
-    if(document.getElementById('bgUrlInput')) 
-       document.getElementById('bgUrlInput').value = worldBgImg;
-  }
-
-  buildGrid();
-  render();
-}
-// --- Play area
-const npcImgCache = npcImages.map(img=>{ const i=new Image(); i.src=img.url; return i; });
-
-function startPlayWithProject(p){
-  if(!p||!p.grid){alert('Ei kelvollinen projekti'); return;}
-  playState={ map:p.grid.slice(0), w:p.width, h:p.height, player:{...p.player}, start:{...p.player}, npcs:p.npcs? p.npcs.map(n=>({...n})) : [],
-backgroundGrid: p.backgroundGrid || []
-  teleportA=teleportB=null; hasKey=false;
-  for(let y=0;y<playState.h;y++){ for(let x=0;x<playState.w;x++){ const t=playState.map[y*playState.w+x]; if(t===6) teleportA={x,y}; if(t===7) teleportB={x,y}; } }
-  resizePlayCanvas(); updateCamera(); drawPlay(); openPlayer.click();
-}
-playCanvas.style.backgroundColor = playBgColor;
-
-if(playBgImg){
-  playCanvas.style.backgroundImage = `url('${playBgImg}')`;
-  playCanvas.style.backgroundSize = "cover";
-}else{
-  playCanvas.style.backgroundImage = "none";
-}
-resizePlayCanvas();
-
-function resizePlayCanvas(){ playCanvas.width=640; playCanvas.height=640; }
-function updateCamera(){ if(!playState) return; camera.x=playState.w<=VIEW_W?0:clamp(playState.player.x-Math.floor(VIEW_W/2),0,playState.w-VIEW_W); camera.y=playState.h<=VIEW_H?0:clamp(playState.player.y-Math.floor(VIEW_H/2),0,playState.h-VIEW_H); }
-
-function drawPlay(){
-  if(!playState) return;
-  const size=Math.floor(playCanvas.width/VIEW_W);
-  playCtx.clearRect(0,0,playCanvas.width,playCanvas.height);
-
-  // Tiles
-  for(let y=0;y<VIEW_H;y++){ 
-    for(let x=0;x<VIEW_W;x++){
-      const px=x+camera.x, py=y+camera.y; 
-      if(px>=playState.w||py>=playState.h) continue;
-      
-      const t=playState.map[py*playState.w+px];
-      
-      // Piirretään laatikon täyttö
-      playCtx.fillStyle=['#0000','#1f2937','#fde68a','#facc15','#10b981','#ef4444','#8b5cf6','#ec4899'][t];
-      playCtx.fillRect(x*size,y*size,size,size);
-
-      // --- MUSTAT OUTLINET ---
-      if(t !== 0) { // Ei piirretä reunoja tyhjälle ilmalle (0)
-        playCtx.strokeStyle = "black";
-        playCtx.lineWidth = 2;
-        playCtx.strokeRect(x*size, y*size, size, size);
-      }
-    }
-  }
-
-  // NPCs
-  playState.npcs.forEach(npc=>{
-    const nx=npc.x-camera.x, ny=npc.y-camera.y;
-    if(nx>=0 && ny>=0 && nx<VIEW_W && ny<VIEW_H){ 
-      playCtx.drawImage(npcImgCache[npc.img], nx*size, ny*size, size, size);
-    
-      
-    }
-  });
-
-  // Player
-  const px=playState.player.x-camera.x, py=playState.player.y-camera.y;
-  if(px>=0 && py>=0 && px<VIEW_W && py<VIEW_H){
-    playCtx.fillStyle='rgba(96,165,250,0.9)';
-    playCtx.beginPath();
-    playCtx.arc(px*size+size/2, py*size+size/2, size/2-2,0,Math.PI*2);
-    playCtx.fill();
-    // Pelaajan reuna
-    playCtx.strokeStyle = "black";
-    playCtx.lineWidth = 2;
-    playCtx.stroke();
-  }
-}
-
-// --- Player load & paste
-playerLoadFile.addEventListener('click',()=>playerFileInput.click());
-playerFileInput.addEventListener('change',e=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{try{startPlayWithProject(JSON.parse(ev.target.result));}catch(err){alert('Tiedoston lukeminen epäonnistui: '+err.message);}}; r.readAsText(f); });
-pasteBase64Btn.addEventListener('click',()=>{ pasteInput.value=''; openPopup(pastePopup); pasteInput.focus(); });
-pasteCancel.addEventListener('click',()=>{ closePopup(pastePopup); });
-pasteConfirm.addEventListener('click',()=>{
-  closePopup(pastePopup);
-  const text=pasteInput.value.trim(); if(!text) return;
-  try{ const parsed=JSON.parse(atob(text)); if(!parsed||!parsed.grid){ alert('Virhe: Projekti ei kelpaa (puuttuu grid)'); return; } startPlayWithProject(parsed); }catch(err){ alert('Virhe: '+err.message); }
-});
-
-// --- Touch & mouse editor
-let isDrawing=false;
-editorGrid.addEventListener('mousedown',e=>{
-  const cell=e.target.closest('.cell');
-  if(!cell) return;
-
-  const x=parseInt(cell.dataset.x);
-  const y=parseInt(cell.dataset.y);
-
-  if(pendingNpcPos){
-    if(!pendingNpcPos.edit){
-      pendingNpcPos.x=x; pendingNpcPos.y=y; openNpcPopup();
-    }
-    return;
-  }
-
-  if(state.placingPlayerMode){
-    pushUndoState();
-    state.player={x,y};
-    state.placingPlayerMode=false;
-    setPlayerBtn.textContent='Aseta pelaaja';
-    buildGrid();
-    return;
-  }
-
-  // ✅ TÄRKEIN RIVI
-  pushUndoState();
-  didPushDrawUndo = true;
-
-  isDrawing=true;
-  state.grid[y*state.width+x]=state.selectedTile;
-  buildGrid();
-});
-
-editorGrid.addEventListener('mousemove',e=>{
-  if(!isDrawing) return; const cell=e.target.closest('.cell'); if(!cell) return;
-  const x=parseInt(cell.dataset.x), y=parseInt(cell.dataset.y), idx=y*state.width+x;
-  if(state.grid[idx]!==state.selectedTile){
-    const npcIndex = state.npcs.findIndex(n=>n.x===x && n.y===y); if(npcIndex!==-1) state.npcs.splice(npcIndex,1);
-    state.grid[idx]=state.selectedTile; cell.dataset.t=state.selectedTile; buildGrid();
-  }
-});
-window.addEventListener('mouseup',()=>{
-  isDrawing=false;
-  didPushDrawUndo=false;
-});
-
-
-// --- NPC tooltip
-const npcTooltip=document.createElement('div');
-npcTooltip.style.position='fixed'; npcTooltip.style.padding='4px 8px'; npcTooltip.style.background='rgba(0,0,0,0.7)';
-npcTooltip.style.color='white'; npcTooltip.style.borderRadius='6px'; npcTooltip.style.fontSize='12px';
-npcTooltip.style.pointerEvents='none'; npcTooltip.style.display='none'; npcTooltip.style.zIndex=10000;
-document.body.appendChild(npcTooltip);
-function showNpcTooltip(npc){
-  const size=Math.floor(playCanvas.width/VIEW_W);
-  const canvasRect=playCanvas.getBoundingClientRect();
-  const nx=npc.x-camera.x, ny=npc.y-camera.y;
-  npcTooltip.textContent=npc.name;
-  npcTooltip.style.left=(canvasRect.left+nx*size+size/2-npcTooltip.offsetWidth/2)+'px';
-  npcTooltip.style.top=(canvasRect.top+ny*size-22)+'px';
-  npcTooltip.style.display='block';
-  setTimeout(()=>{ npcTooltip.style.display='none'; },1500);
-}
-
-// --- Key movement & events
-window.addEventListener('keydown',e=>{
-  if(!playState) return;
-  const dir={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];
-  if(dir){ e.preventDefault(); const dx=dir[0], dy=dir[1], nx=clamp(playState.player.x+dx,0,playState.w-1), ny=clamp(playState.player.y+dy,0,playState.h-1);
-    const t=playState.map[ny*playState.w+nx]; if([1,9].includes(t)) return;
-    if(t===6 && teleportB){ playState.player={...teleportB}; } else if(t===7 && teleportA){ playState.player={...teleportA}; } else { playState.player={x:nx,y:ny}; }
-    playState.npcs.forEach(npc=>{ if(playState.player.x===npc.x && playState.player.y===npc.y){ showNpcTooltip(npc); showMessage(`💬 ${npc.name}: ${npc.dialog}`); } });
-    if(t===3){ hasKey=true; playState.map[ny*playState.w+nx]=0; showMessage('🔑 Sait avaimen!'); }
-    else if(t===4){ if(hasKey){ playState.map[ny*playState.w+nx]=0; showMessage('🚪 Avaat oven avaimella!'); } else{ playState.player.x-=dx; playState.player.y-=dy; showMessage('🚫 Ovi on lukossa!'); } }
-    if(t===5){ flashScreen('red'); showMessage('💥 Osuit ansaan!',1500); playState.player={...playState.start}; updateCamera(); drawPlay(); return; }
-    updateCamera(); drawPlay(); if(t===2) setTimeout(showWinPopup,30);
-  }
-});
-
-// --- Load last project from URL hash
-window.addEventListener('load',()=>{
-  initState(); buildGrid();
-  const hash=location.hash.slice(1);
-  if(hash.startsWith('level=')){ try{ applyProject(JSON.parse(atob(hash.replace('level=','')))); openPlayer.click(); }catch(e){} }
-});
-
-const undoBtn = document.getElementById('undoBtn'), redoBtn=document.getElementById('redoBtn');
-undoBtn.addEventListener('click', undo); redoBtn.addEventListener('click', redo);
-
-// --- Pikanäppäimet
-document.addEventListener('keydown',e=>{
-  if(editorArea.style.display==='none') return;
-  if(e.ctrlKey && e.key.toLowerCase()==='z'){ e.preventDefault(); undo(); }
-  if(e.ctrlKey && (e.key.toLowerCase()==='y' || (e.shiftKey && e.key.toLowerCase()==='z'))){ e.preventDefault(); redo(); }
-});
-
-const helpBtn = document.getElementById('editorHelpBtn');
-const helpPopup = document.getElementById('editorHelpPopup');
-const helpOverlay = document.getElementById('editorHelpOverlay');
-const closeHelp = document.getElementById('closeHelpPopup');
-
-function openHelp() {
-  helpPopup.style.display = 'block';
-  helpOverlay.style.display = 'block';
-}
-
-function closeHelpPopup() {
-  helpPopup.style.display = 'none';
-  helpOverlay.style.display = 'none';
-}
-
-helpBtn.addEventListener('click', openHelp);
-closeHelp.addEventListener('click', closeHelpPopup);
-helpOverlay.addEventListener('click', closeHelpPopup);
-
-
-document.addEventListener("DOMContentLoaded", () => {
-  const modal = document.getElementById("settingsModal");
-  const openBtn = document.getElementById("settingsBtn");
-  const closeBtn = document.getElementById("settingsClose");
-  const bgm = document.getElementById("bgm");
-  const volumeSlider = document.getElementById("volumeSlider");
-  const volumeValue = document.getElementById("volumeValue");
-  const muteBtn = document.getElementById("musicMuteBtn");
-  const musicTiles = document.querySelectorAll(".music-tile");
-  const modeButtons = document.querySelectorAll(".mode-btn");
-  let previousVolume = Number(volumeSlider?.value || 70);
-
-  if (!modal || !openBtn || !closeBtn || !bgm || !volumeSlider || !volumeValue || !muteBtn) {
-    console.error("Settings-elementti puuttuu");
-    return;
-  }
-
-  function syncVolumeUi(value) {
-    const clamped = Math.max(0, Math.min(100, Number(value) || 0));
-    volumeSlider.value = clamped;
-    volumeValue.textContent = `${clamped}%`;
-    volumeSlider.style.setProperty("--volume-fill", `${clamped}%`);
-    bgm.volume = clamped / 100;
-    const muted = clamped === 0 || bgm.muted;
-    muteBtn.textContent = muted ? "Musiikki OFF" : "Musiikki ON";
-    muteBtn.classList.toggle("is-muted", muted);
-  }
-
-  function closeSettings() {
-    modal.classList.add("hidden");
-    document.body.classList.remove("popup-open");
-  }
-
-  openBtn.addEventListener("click", () => {
-    modal.classList.remove("hidden");
-    document.body.classList.add("popup-open");
-  });
-
-  closeBtn.addEventListener("click", closeSettings);
-
-  modal.addEventListener("click", e => {
-    if (e.target === modal) closeSettings();
-  });
-
-  document.addEventListener("keydown", e => {
-    if (e.key === "Escape" && !modal.classList.contains("hidden")) {
-      closeSettings();
-    }
-  });
-
-  modeButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      modeButtons.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      document.body.classList.toggle("crt-on", btn.dataset.mode === "crt");
-    });
-  });
-
-  musicTiles.forEach(tile => {
-    tile.addEventListener("click", () => {
-      musicTiles.forEach(t => t.classList.remove("active"));
-      tile.classList.add("active");
-      if (tile.dataset.src && bgm.src !== tile.dataset.src) {
-        bgm.src = tile.dataset.src;
-      }
-      bgm.loop = true;
-      bgm.muted = false;
-      syncVolumeUi(volumeSlider.value || previousVolume);
-      bgm.play().catch(() => {});
-    });
-  });
-
-  volumeSlider.addEventListener("input", e => {
-    const value = Number(e.target.value);
-    if (value > 0) {
-      previousVolume = value;
-      bgm.muted = false;
-    }
-    syncVolumeUi(value);
-  });
-
-  muteBtn.addEventListener("click", () => {
-    const isMuted = bgm.muted || Number(volumeSlider.value) === 0;
-    if (isMuted) {
-      const restoreVolume = previousVolume > 0 ? previousVolume : 70;
-      bgm.muted = false;
-      syncVolumeUi(restoreVolume);
-      bgm.play().catch(() => {});
-    } else {
-      previousVolume = Number(volumeSlider.value) || previousVolume || 70;
-      bgm.muted = true;
-      syncVolumeUi(0);
-    }
-  });
-
-  syncVolumeUi(previousVolume);
-
-  document.addEventListener("click", () => {
-    if (bgm.paused) {
-      bgm.play().catch(() => {});
-    }
-  }, { once: true });
-});
-document.querySelectorAll('.background-option').forEach(btn=>{
-
-  btn.addEventListener('click',()=>{
-
-    document.querySelectorAll('.tile')
-      .forEach(t=>t.classList.remove('selected'));
-
-    document.querySelectorAll('.background-option')
-      .forEach(t=>t.classList.remove('selected'));
-
-    btn.classList.add('selected');
-
-    selectedBackground = btn.dataset.bg;
-  });
-
-});
-const fillToolBtn = document.getElementById("fillToolBtn");
-
-fillToolBtn.addEventListener("click", () => {
-
-  if(currentTool === "fill"){
-    currentTool = "draw";
-    fillToolBtn.classList.remove("active");
+    img.src = val;
+    img.style.maxWidth = '100%';
+    img.style.maxHeight = '100%';
+    preview.innerHTML = '';
+    preview.appendChild(img);
   } else {
-    currentTool = "fill";
-    fillToolBtn.classList.add("active");
+    preview.textContent = val || '😊';
   }
-
 });
-const bgColorPicker = document.getElementById("bgColorPicker");
 
-if(bgColorPicker){
+document.getElementById('saveNpcBtn').addEventListener('click', () => {
+  const npc = {
+    name: document.getElementById('npcName').value,
+    image: document.getElementById('npcImage').value,
+    text: document.getElementById('npcText').value
+  };
+  gameState.npcs.push(npc);
+  document.getElementById('npcPopup').classList.remove('show');
+});
 
-  bgColorPicker.addEventListener("input", e => {
+document.getElementById('projectName').addEventListener('change', () => {
+  gameState.projectName = document.getElementById('projectName').value;
+});
 
-    worldBgColor = e.target.value;
+// === INIT ===
 
-    editorGrid.style.backgroundColor = worldBgColor;
+setupColorPicker();
+showStart();
 
-  });
-
-}
 </script>
-
-
-
 </body>
 </html>
